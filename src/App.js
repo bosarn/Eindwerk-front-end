@@ -34,7 +34,7 @@ function App() {
     <Route exact path="/" >
       <Landing/>
     </Route>
-    <Route path="/api/objects/:id/:title" render={(props)=> <Detail {...props}/>}/>   
+    <Route path="/wdev_arno/eindwerk/api/objects/:id/:title" render={(props)=> <Detail {...props}/>}/>   
 
     <Route path='/shopping-cart'>
       <Shoppingcart/>

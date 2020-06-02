@@ -23,7 +23,7 @@ const FETCH_OBJECTS_ERROR = "FETCH_OBJECTS_ERROR";
 export const getObjects = () => (dispatch) => {
   dispatch(loadObjects());
   axios
-    .get(`http://192.168.0.128:8000/api/objects`)
+    .get(`${process.env.REACT_APP_API_URL}objects`)
     .then((res) => {
       //console.log(res);
       if (res.data === null) {

@@ -1,10 +1,7 @@
-
 /*****************/
 /* INITIAL STATE */
 /*****************/
-const initialState = []
-
-
+const initialState = [];
 
 /*********/
 /* TYPES */
@@ -12,7 +9,7 @@ const initialState = []
 const PUSH_ITEM_TO_CART = "PUSH_ITEM_TO_CART";
 const REMOVE_ITEM_FROM_CART = "REMOVE_ITEM_FROM_CART";
 const SET_OBJECT_QUANTITY = "SET_OBJECT_QUANTITY";
-
+const CLEAR_SHOPPING_CART = "CLEAR_SHOPPING_CART";
 /*******************/
 /* ACTION CREATORS */
 /*******************/
@@ -21,66 +18,64 @@ const SET_OBJECT_QUANTITY = "SET_OBJECT_QUANTITY";
 // remove items
 // setquantity
 
-
 export const pushItemToCart = (itemID) => ({
-    type: PUSH_ITEM_TO_CART,
-    payload: itemID
-})
+  type: PUSH_ITEM_TO_CART,
+  payload: itemID,
+});
 export const removeItemFromCart = (itemID) => ({
-    type: REMOVE_ITEM_FROM_CART,
-    payload: itemID
-})
+  type: REMOVE_ITEM_FROM_CART,
+  payload: itemID,
+});
 
-export const setObjectQuantity = (itemID,quantity) => ({
-    type: SET_OBJECT_QUANTITY,
-    payload: itemID,quantity
-})
-
-
+export const setObjectQuantity = (itemID, quantity) => ({
+  type: SET_OBJECT_QUANTITY,
+  payload: itemID,
+  numberload: quantity,
+});
+export const clearShoppingCart = () => ({
+  type: CLEAR_SHOPPING_CART,
+});
 
 /***********/
 /* REDUCER */
 /***********/
 
-export default (state = initialState, { type, payload }) => {
+export default (state = initialState, { type, payload, numberload }) => {
   switch (type) {
     case PUSH_ITEM_TO_CART:
-        // if object already in cart do +1 
-          // else push object in 
-          console.log(payload)
-          console.log(payload["@id"])
-          const object = state.find( id => id.print["@id"] === payload["@id"])
-          console.log(object)
-          if (object)
-          {
-                object.quantity += 1
-                
-          }
-           else {
-               state.push( 
-                   { 'print': payload,
-                    'quantity': 1}
-                     )} 
-                
+      // if object already in cart do +1
+      // else push object in
+      const object = state.find((id) => id.print["@id"] === payload["@id"]);
+      if (object) {
+        object.quantity += 1;
+      } else {
+        state.push({ print: payload, quantity: 1 });
+      }
 
-
-            return state
+      return state;
 
     case REMOVE_ITEM_FROM_CART:
-        if ( state.find( id => id.print["@id"] === payload["@id"])) {
-            state.shift( state.find( id => id.print["@id"] === payload["@id"]))
-            console.log('werkt')
-        }
-    
-        return state;
+      if (state.find((id) => id.print["@id"] === payload["@id"])) {
+        state.shift(state.find((id) => id.print["@id"] === payload["@id"]));
+      }
+
+      return state;
 
     case SET_OBJECT_QUANTITY:
-// todo set object + remove all
+      // todo set object + remove all
 
-      return {
-        ...state,
+      if (state.find((id) => id.print["@id"] === payload)) {
+        let change = state.find((id) => id.print["@id"] === payload);
+        change.quantity = numberload;
+      }
 
-      };
+      return state;
+
+    case CLEAR_SHOPPING_CART:
+      console.log('ttry clear')
+      state = []
+      return state;
+
     default:
       return state;
   }

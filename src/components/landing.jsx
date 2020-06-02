@@ -73,7 +73,8 @@ export default () => {
 
   return (
     <>
-    
+      
+
       {loading && <p>Loading...</p>}
       {error !== "" && <p>{error}</p>}
 
@@ -106,7 +107,7 @@ export default () => {
 
                   <CardMedia
                     title={object.printTime}
-                    image={"http://192.168.0.128:8000" + object.images[0].path}
+                    image={ process.env.REACT_APP_BASE_PATH + object.images[0].path}
                     component="img"
                     maxHeight="300px"
                   />
