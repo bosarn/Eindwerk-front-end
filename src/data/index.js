@@ -4,6 +4,8 @@ import objectsReducer from "./objects";
 import filterReducer from "./filter"
 import objectReducer from './object'
 import shoppingcartReducer from './shoppingcart'
+import carouselReducer from './carousel'
+
 
 export default createStore(
     combineReducers({
@@ -11,6 +13,7 @@ export default createStore(
       filters: filterReducer,
       object: objectReducer,
       shoppingcart: shoppingcartReducer,
+      carousel: carouselReducer,
     }),
     applyMiddleware(thunk)
   );

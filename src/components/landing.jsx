@@ -5,7 +5,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { Button } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 
 import React, { useEffect } from "react";
@@ -14,7 +14,8 @@ import { getObjects } from "../data/objects";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {pushItemToCart, removeItemFromCart} from "../data/shoppingcart"
+import {pushItemToCart} from "../data/shoppingcart"
+import { findByLabelText } from "@testing-library/react";
 
 
 
@@ -33,7 +34,7 @@ export default () => {
 
     useEffect(() => {
       dispatch(getObjects());
-    }, []);
+    }, [dispatch]);
   
 
  
@@ -52,7 +53,8 @@ export default () => {
     },
     link: {
       textDecoration: 'none'
-    }
+    },
+
   });
 
   const classes = useStyles();
@@ -63,21 +65,19 @@ export default () => {
   // filterfunction checks if object has certain categories
   // filterarray.includes( category.name)
   let filterArray = filter.filters;
-  let satan = data;
+  let filteredobjects = data;
 
   if (filterArray.length !== 0) {
-    satan = data.filter((object) =>
+    filteredobjects = data.filter((object) =>
       object.Categories.some((category) => filterArray.includes(category.name))
     );
   }
 
+
   return (
     <>
-      
-
-      {loading && <p>Loading...</p>}
       {error !== "" && <p>{error}</p>}
-
+       
       <Grid
         container
         spacing={2}
@@ -85,9 +85,12 @@ export default () => {
         alignItems="center"
         className={classes.container}
       >
-        {satan.map((object) => (
+{loading && <CircularProgress size='100px'/>} 
+        
+        {filteredobjects.map((object) => (
           <Grid item key={object["@id"]}>
             <Card className={classes.root}>
+            
               <Typography gutterBottom variant="body1" color="secondary">
                 ${object.Price[0].value}
                 <Button

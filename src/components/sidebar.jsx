@@ -36,17 +36,26 @@ export default (Sidebar) => {
     objects: state.objects,
     filter: state.filters,
     cart: state.shoppingcart,
+    carousel : state.carousel,
   }));
 
   const { objects } = data;
   const { filter } = data;
+  const{ carousel } = data
 
   const log = (e) => {
     e.preventDefault();
     //console.log(filter.filters)
     //console.log(objects.data)
     console.log(data.cart);
+
   };
+  let q = 0;
+
+
+
+
+
 
   // fetch all categories from data
   //merge into 1 array

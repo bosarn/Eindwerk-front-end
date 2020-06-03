@@ -76,7 +76,7 @@ const classes = useStyles();
     const registeruser = ( email, password, userName) => {
         axios({
             method: 'post',
-            url: 'http://192.168.0.128:8000/api/users',
+            url: 'https://wdev.be/wdev_arno/eindwerk/api/register',
             headers: { 
                 'Content-Type' : 'application/json'
             }, 

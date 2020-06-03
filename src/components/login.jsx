@@ -72,7 +72,7 @@ const classes = useStyles();
     const loginUser = ( email, password) => {
         axios({
             method: 'post',
-            url: 'http://192.168.0.128:8000/api/login',
+            url: 'https://wdev.be/wdev_arno/eindwerk/api/login',
             headers: { 
                 'Content-Type' : 'application/json' 
             }, 

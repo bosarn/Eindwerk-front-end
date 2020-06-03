@@ -112,13 +112,15 @@ export default () => {
   });
 
   const sendOrder = (data) => {
+    console.log(localStorage.getItem('token'))
     axios({
+      
       method: "post",
       url: `${process.env.REACT_APP_API_URL}orders`,
       headers: {
         "Content-Type": "application/ld+json; charset=utf-8",
         Authorization:
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1OTA5MzQ1MDYsImV4cCI6MzYxNjkwOTM0NTA1LCJyb2xlcyI6WyJST0xFX1VTRVIiXSwidXNlcm5hbWUiOiJwb2xvQG5haXNlIn0.vjPsn2zq2gNBn3lp9bf4SQqnjT42yt4fFcDGmTiu4k7TbQf1o2lZmpJYH4-lgeZp9-naJol_Ka4W7Lg8BtIQrYJcPgQlrxnlrtvFw2OnKX1cQf2mnBOxWAxJBbZBY7V2ltm2zBCtY7HtPefTgJzmQKWx-J4AgLTODOsTi6ztH-5yKeXz-UCBDjj4tcaB5M9Pm9ASkKDxqeolDRd4coZJm-sy8xvcoCvpGnFgITG1fHCzFKY0X9S3IozDdnrcI1dgXbY6mova1VRqi3oD6sMkKbeLibdtjHqj4YJbEAnl9fxZ2ub2IQ3Ic-eWFue_-dHwVP2XPKRswTKXAhGIAlYZXqUIO6gGQ3_m2zLpAYjYYOoa1Z134ZBQrFJ_1alVrSRdt9dkHbRALgFrA02N-37CyFXb2Tw9_-gZjQkNHVKATkcln88D10pXYf9rNx-NUHcXyPsqkdateNwYzl_Cj54Q265-Zd4aMkel1uufWOfp4210jS4mtgqIOJSkkpGulzVfQGTs8mV-n1v6PGO0Tk9euxBYmqqRgnGe3O2Bw5T50qxdw3MtoiNUd8eHiLlcUdDXTWQRmeXHq-n_XdryWnFUDbs3NSHJiQdBDyBMOySvtfezDvEEXzJTSuwkO-rYTdVTEyFXEBROujgto8LkI7fvanybTvBjC-kCUdCVE1mOcVQ",
+          `Bearer ${localStorage.getItem('token')}`,
         // TODO Localstorage token
       },
       data: data,

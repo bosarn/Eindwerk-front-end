@@ -22,7 +22,7 @@ const useStyles = makeStyles({
       width: '90px',
       margin: '10px'
   },
-  kakfretter : {
+  toolbar : {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -66,21 +66,23 @@ const data = useSelector((state) => ({
 }));
 
 const classes = useStyles();
+const CartTotal = data.cart.reduce ( (a,b) => a + b.quantity, 0)
+
 
 
 
 return (
 <AppBar position="static" className={classes.root} >
   
-  <Toolbar className={classes.kakfretter}>
-  <img className={classes.images} src='/logo.png' alt='heftemdichtjoeng'></img>
+  <Toolbar className={classes.toolbar}>
+  <img className={classes.images} src='/logo.png' alt='logo'></img>
     <Typography variant="h2" >
       3D-PrintFarm
     </Typography>
     <nav>
           <ul className={classes.Navigation}>
          <li> <Badge 
-          badgeContent={data.cart.length}
+          badgeContent={CartTotal}
           color="secondary">
               <Link to="/shopping-cart">
               <ShoppingCartIcon/>
@@ -90,7 +92,7 @@ return (
             <li>
               <Badge>
               
-              <Link to="/shopping-cart">
+              <Link to="/profile">
               <AccountCircleIcon/>
             </Link>
             </Badge>

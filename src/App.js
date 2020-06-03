@@ -15,6 +15,7 @@ import Sidebar from './components/sidebar'
 import Footer from './components/Footer'
 import Detail from './components/Detail'
 import Shoppingcart from './components/Shoppingcart';
+import Profile from './components/Profile'
 
 
 function App() {
@@ -29,6 +30,9 @@ function App() {
 
     <Route path='/login'>
       <Login/>
+    </Route>
+    <Route path='/profile'>
+      <Profile/>
     </Route>
 
     <Route exact path="/" >

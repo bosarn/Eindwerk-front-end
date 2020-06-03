@@ -2,18 +2,31 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-
+import { setCarousel, advanceCarousel, maxCarousel } from "../data/carousel";
 import { getObject } from "../data/object";
-import { CardMedia, Paper, Container, Typography } from "@material-ui/core";
+import {
+  CardMedia,
+  Paper,
+  Container,
+  Typography,
+  Button,
+} from "@material-ui/core";
 
 export default (props) => {
   const dispatch = useDispatch();
 
-  const detailData = useSelector((state) => state.object);
+  const Data = useSelector((state) => ({
+    object: state.object,
+    carousel: state.carousel,
+  }));
+  const { object } = Data;
+  const { carousel } = Data;
+
 
   useEffect(() => {
     dispatch(getObject(props.match.params.id));
   }, []);
+
   const useStyles = makeStyles({
     root: {
       marginTop: "3rem",
@@ -56,16 +69,26 @@ export default (props) => {
   return (
     <Container maxWidth="l">
       <Typography className={classes.title} variant="h3">
-        {detailData.data.name}
+        {object.data.name}
       </Typography>
       <Paper className={classes.root}>
         <div className={classes.carousel}>
-          {detailData.data.images ? (
+
+          {object.data.images  ? (
             <CardMedia
+              onClick={() =>
+                dispatch(
+                  advanceCarousel(
+                    object.data.images.length ? object.data.images.length : 1
+                  )
+                )
+              }
               className={classes.headimage}
               component="img"
               image={
-                process.env.REACT_APP_BASE_PATH + detailData.data.images[0].path
+  
+                process.env.REACT_APP_BASE_PATH +
+                object.data.images[ carousel+1 > object.data.images.length ?  0 : carousel].path
               }
               maxHeight="50px"
             />
@@ -74,9 +97,10 @@ export default (props) => {
           )}
 
           <div className={classes.images}>
-            {detailData.data.images
-              ? detailData.data.images.map((image) => (
+            {object.data.images
+              ? object.data.images.map((image, i) => (
                   <CardMedia
+                    onClick={() => dispatch(setCarousel(i))}
                     className={classes.slider}
                     title={image.name}
                     image={process.env.REACT_APP_BASE_PATH + image.path}
@@ -90,25 +114,25 @@ export default (props) => {
           Carousel van afbeeldingen maken
           <Typography variant="h5">Tags</Typography>
           <ul>
-            {detailData.data.Categories
-              ? detailData.data.Categories.map((category) => (
+            {object.data.Categories
+              ? object.data.Categories.map((category) => (
                   <li>{category.name}</li>
                 ))
               : "none"}
           </ul>
           <Typography variant="h5">Images</Typography>
           <ul>
-            {detailData.data.Categories
-              ? detailData.data.images.map((image) => <li>{image.path}</li>)
+            {object.data.images
+              ? object.data.images.map((image) => <li>{image.path}</li>)
               : "none"}
           </ul>
           <Typography variant="h5">Price</Typography>
-          {detailData.data.Price ? detailData.data.Price[0].value : ""}
+          {object.data.Price ? object.data.Price[0].value : ""}
           <Typography variant="h5">
             {" "}
-            Print-time : {detailData.data.printTime}
+            Print-time : {object.data.printTime}
           </Typography>
-          <Typography variant="h5"> Size: {detailData.data.size} </Typography>
+          <Typography variant="h5"> Size: {object.data.size} </Typography>
           <Typography>
             {" "}
             BUY NOW! Or satan will eat your ass, like corn on the cob
