@@ -25,6 +25,7 @@ export const getObject = (objectID) => (dispatch) => {
   axios
     .get(`${process.env.REACT_APP_API_URL}objects/${objectID}`)
     .then((res) => {
+      console.log(res)
       if (res.data === null) {
         dispatch(setError("No objects found"));
       } else {

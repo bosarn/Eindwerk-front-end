@@ -1,3 +1,17 @@
+
+#root{     
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+body{
+  box-sizing: border-box;
+  padding: 0;
+  overflow-x: auto;
+}
+
+
 li {
   text-decoration: none;
   list-style-type: none;
@@ -29,6 +43,9 @@ code {
 
 .partager{
   display: flex;
+    box-sizing: border-box;
+  padding: 0;
+  overflow-x: auto;
 }
 
 
@@ -40,5 +57,5 @@ code {
 }
 footer p {
   font-size: 12px;
-  padding-top: 5px;
+  margin-top: 5px;
 }

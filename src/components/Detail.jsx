@@ -126,16 +126,16 @@ export default (props) => {
               ? object.data.images.map((image) => <li>{image.path}</li>)
               : "none"}
           </ul>
-          <Typography variant="h5">Price</Typography>
-          {object.data.Price ? object.data.Price[0].value : ""}
+          <Typography variant="h5">Price : ${object.data.currentPriceValue } </Typography>
+          
           <Typography variant="h5">
             {" "}
             Print-time : {object.data.printTime}
           </Typography>
           <Typography variant="h5"> Size: {object.data.size} </Typography>
           <Typography>
-            {" "}
-            BUY NOW! Or satan will eat your ass, like corn on the cob
+            {"Description here"}
+           
           </Typography>
         </Container>
       </Paper>

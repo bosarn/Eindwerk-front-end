@@ -16,7 +16,7 @@ import Footer from './components/Footer'
 import Detail from './components/Detail'
 import Shoppingcart from './components/Shoppingcart';
 import Profile from './components/Profile'
-
+import TEST from './components/TEST'
 
 function App() {
   return (
@@ -42,6 +42,9 @@ function App() {
 
     <Route path='/shopping-cart'>
       <Shoppingcart/>
+    </Route>
+    <Route path='/test'>
+      <TEST/>
     </Route>
 
     </Switch>

@@ -14,7 +14,7 @@ export default (Sidebar) => {
       listStyleType: "none",
       borderRight: "1px solid #d3d3d3",
       color: "black",
-      width: "10%",
+      width: "15%",
       height: "100vh",
       display: "flex",
       flexDirection: "column",
@@ -46,15 +46,10 @@ export default (Sidebar) => {
   const log = (e) => {
     e.preventDefault();
     //console.log(filter.filters)
-    //console.log(objects.data)
-    console.log(data.cart);
+    console.log(objects)
+    //console.log(data.cart);
 
   };
-  let q = 0;
-
-
-
-
 
 
   // fetch all categories from data

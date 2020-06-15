@@ -39,6 +39,7 @@ const useStyles = makeStyles({
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      overflow: 'visible',
 
       '& li': {
           paddingRight: '20px',
@@ -66,7 +67,8 @@ const data = useSelector((state) => ({
 }));
 
 const classes = useStyles();
-const CartTotal = data.cart.reduce ( (a,b) => a + b.quantity, 0)
+const CartTotal = data.cart.length
+//data.cart.reduce ( (a,b) => a + b.quantity, 0)
 
 
 
