@@ -6,7 +6,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Skeleton from "@material-ui/lab/Skeleton";
-import { Button, CircularProgress, Box, TextField, Snackbar } from "@material-ui/core";
+import { Button, CircularProgress, Box, TextField, Snackbar, Chip } from "@material-ui/core";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 import { pushItemToCart } from "../data/shoppingcart";
 import { useState } from "react";
 import {Pagination, Alert} from "@material-ui/lab";
+import DoneIcon from '@material-ui/icons/Done';
+import {currencyFormat} from '../helpers/moneyconvert'
 
 export default () => {
   const dortor = useSelector((state) => ({
@@ -53,8 +55,12 @@ export default () => {
     link: {
       textDecoration: "none",
     },
+    textalign:{
+      display: 'flex',
+      justifyContent: 'center',
+    },
     textfield: {
-      marginLeft: '40%',
+           
       width: "20%",
       marginTop: "2em",
     },
@@ -77,6 +83,15 @@ export default () => {
       justifyContent: "center",
       marginTop: "2em",
     },
+    chips: {
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      '& li' : {
+          marginLeft: '10px'
+      },
+
+    }
   });
 
   const classes = useStyles();
@@ -137,14 +152,20 @@ export default () => {
     dispatch(getObjects(textFieldValue))
 
   }
+  const handleDelete = () => {
+    console.info('You clicked the delete icon.');
+  };
+
+  const handleClickChip = () => {
+    console.info('You clicked the Chip.');
+  };
+
 
   return (
     <>
+
       <div className={classes.Pages}>
-      <Button variant="outlined" onClick={handleClick}>
-        Open success snackbar
-      </Button>
-      <form onSubmit={submitHandler}>
+      <form className={classes.textalign} onSubmit={submitHandler}>
         <TextField className={classes.textfield} id="outlined-basic" label="Search prints" variant="outlined"  
         onChange={(e) => {settextFieldValue(e.target.value)}}/>
 
@@ -159,6 +180,22 @@ export default () => {
           />
         )}
 
+        <ul className={classes.chips}>
+    {filterArray.map((filter,i) => 
+    <li key={i}>
+    <Chip
+      label={filter}
+      className={classes.chip}
+      clickable={true}
+      onClick={handleClickChip}
+      color="secondary"
+      
+      
+      onDelete={handleDelete}
+    />
+  </li>
+    )}
+    </ul>
         <Grid
           container
           spacing={2}
@@ -170,9 +207,10 @@ export default () => {
             (object, i) => (
               <Grid item key={object ? object["@id"] : i}>
                 <Card className={classes.root}>
-                  <Typography gutterBottom variant="body1" color="secondary">
+                  
+                  <Typography gutterBottom variant="body1" color="secondary" align='center'>
                     {object ? (
-                      "$" + object.currentPriceValue
+                      currencyFormat(object.currentPriceValue)
                     ) : (
                       <Skeleton animation="wave" height={10} width="40%" />
                     )}
@@ -206,6 +244,7 @@ export default () => {
 
                         <CardContent>
                           <Typography
+                            align='center'
                             variant="h4"
                             color="textSecondary"
                             component="p"
@@ -277,4 +316,8 @@ export default () => {
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
  * 
   const paginate = pageNumber => setCurrentPage(pageNumber);
+
+
+
+  array promises foreach await promises 
  */

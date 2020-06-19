@@ -1,14 +1,25 @@
 import { useSelector,useDispatch } from "react-redux";
-import React from 'react'
+import React,{useState} from 'react'
 import { makeStyles } from "@material-ui/core/styles";
-import {  AppBar, Toolbar ,Typography } from '@material-ui/core';
+import {  
+  AppBar, 
+  Toolbar ,
+  Typography, 
+  Menu,
+  MenuItem,
+  Fade  } 
+  from '@material-ui/core';
 import {Link} from "react-router-dom";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import HomeIcon from '@material-ui/icons/Home';
 import {Button, Badge} from "@material-ui/core"
+import SettingsIcon from '@material-ui/icons/Settings';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import {currencyFormat} from '../helpers/moneyconvert'
 
-
-export default  () => {
+export default  ({checker, checked}) => {
+  const matches = useMediaQuery('(min-width:600px)');
 
 const useStyles = makeStyles({
   root: {
@@ -18,8 +29,17 @@ const useStyles = makeStyles({
     color: 'white',
     padding: '0 50px',
   },
+  CartHover: {
+    position: 'absolute',
+    marginTop: '20px',
+    color: 'black',
+    '& li': {
+      borderBottom: '1px solid grey',
+      width: '100%'
+    }
+  },
   images: {
-      width: '90px',
+      width: '100px',
       margin: '10px'
   },
   toolbar : {
@@ -45,6 +65,11 @@ const useStyles = makeStyles({
           paddingRight: '20px',
           marginRight: '10px',
       },
+      '& li:hover': {
+        'div': {
+          display: 'block'
+        }
+    },
       '& li a': {
         textDecoration: 'none',        
         color: 'white',
@@ -55,7 +80,8 @@ const useStyles = makeStyles({
       
       },
       '& li a:hover': {
-        color: 'black', 
+        color: 'black',
+
       },
     }
   
@@ -69,6 +95,17 @@ const data = useSelector((state) => ({
 const classes = useStyles();
 const CartTotal = data.cart.length
 //data.cart.reduce ( (a,b) => a + b.quantity, 0)
+const [anchorEl, setAnchorEl] = useState(null);
+const open = Boolean(anchorEl);
+
+const handleClick = (event) => {
+  setAnchorEl(event.currentTarget);
+};
+
+
+const handleClose = () => {
+  setAnchorEl(null);
+};
 
 
 
@@ -78,18 +115,62 @@ return (
   
   <Toolbar className={classes.toolbar}>
   <img className={classes.images} src='/logo.png' alt='logo'></img>
-    <Typography variant="h2" >
-      3D-PrintFarm
+
+   {matches ?  <Typography variant="h2" >
+      3D-PrintDomain
+      <Typography variant='h6' align='center' color='textSecondary'> Van idee naar 3D!</Typography>
     </Typography>
+    : '' }
+
     <nav>
           <ul className={classes.Navigation}>
-         <li> <Badge 
+         <Button aria-controls="fade-menu" aria-haspopup="true" onClick={handleClick}> <Badge 
           badgeContent={CartTotal}
           color="secondary">
-              <Link to="/shopping-cart">
+
               <ShoppingCartIcon/>
-              </Link>
-            </Badge></li>
+              
+            </Badge>
+              </Button>
+              
+              {data.cart ? 
+              <Menu 
+              id="fade-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={open}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+              >
+              {data.cart.map( object =>
+                
+                <MenuItem onClick={handleClose}>
+                  <li><Typography >{object.print.name} X {object.quantity}</Typography>
+                
+                <Typography color='secondary'>{currencyFormat(object.print.currentPriceValue * object.quantity)}</Typography></li>
+                </MenuItem>
+                ) }
+                <MenuItem onClick={handleClose}><li>Items: {CartTotal} </li></MenuItem>
+                <MenuItem onClick={handleClose}><li> Total:{currencyFormat(data.cart
+                .map((object) => object.print.currentPriceValue * object.quantity)
+                .reduce((a, b) => a + b, 0))} </li></MenuItem>
+                   <MenuItem onClick={handleClose}>                
+                   <Link to="/shopping-cart">
+                  <Button color='secondary'>
+                Afrekenen : 
+              <ShoppingCartIcon/>
+              </Button></Link>    </MenuItem>
+   
+
+              </Menu>
+            : 
+           <p> Nothing in the basket yet!
+           Try clicking a shopping cart icon.</p>
+            
+            }
+
+
+
 
             <li>
               <Badge>
@@ -100,10 +181,17 @@ return (
             </Badge>
             </li>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">
+                <HomeIcon/>
+              </Link>
+            </li>
+            <li><Button onClick={() => checker()}>  <SettingsIcon/></Button>
+              
             </li>
             <li>
-              <Link to="/login">Login</Link>
+              <Link to="/login">
+                login
+              </Link>
             </li>
           </ul>
         </nav>

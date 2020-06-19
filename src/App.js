@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -17,20 +17,38 @@ import Detail from './components/Detail'
 import Shoppingcart from './components/Shoppingcart';
 import Profile from './components/Profile'
 import TEST from './components/TEST'
+import Orders from './components/Orders'
+
+
+
+
 
 function App() {
+
+  const [checked, setChecked] = useState(false);
+
+const handleChange = () => {
+  setChecked((prev) => !prev);
+};
+
+
   return (
     <Provider store={store} > 
     <Router>
-    <Header/>
+    <Header checker={handleChange} checked={checked}/>
     <div className='partager'>
-    <Sidebar/>
+
 
     <Switch>
 
     <Route path='/login'>
       <Login/>
     </Route>
+
+    <Route path='/orders'>
+      <Orders/>
+    </Route>
+
     <Route path='/profile'>
       <Profile/>
     </Route>
@@ -48,6 +66,7 @@ function App() {
     </Route>
 
     </Switch>
+    <Sidebar checked ={checked} checker={handleChange}/>
     </div>
     </Router>
       <Footer/>

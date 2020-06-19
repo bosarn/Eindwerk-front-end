@@ -56,7 +56,8 @@ export default (state = initialState, { type, payload, numberload }) => {
 
     case REMOVE_ITEM_FROM_CART:
       if (state.find((id) => id.print["@id"] === payload["@id"])) {
-        state.shift(state.find((id) => id.print["@id"] === payload["@id"]));
+        
+        state =  state.filter(id => id.print["@id"] !== payload["@id"]);
       }
 
       return state;

@@ -22,6 +22,7 @@ import {
 } from "@material-ui/core";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import axios from "axios";
+import {currencyFormat} from '../helpers/moneyconvert'
 
 export default () => {
   const dispatch = useDispatch();
@@ -147,7 +148,7 @@ export default () => {
               >
                 <div className={classes.test}>
                   <Typography className={classes.heading}>
-                    <h4>{object.print.name}</h4>${object.print.Price[0].value} X
+                    <h4>{object.print.name}</h4> {currencyFormat(object.print.currentPriceValue)} X
                     <form>
                       <input
                         onChange={(e) =>
@@ -161,7 +162,7 @@ export default () => {
                         placeholder={object.quantity}
                       ></input>
                     </form>
-                    {object.print.Price[0].value * object.quantity}
+                    {currencyFormat(object.print.currentPriceValue * object.quantity)}
                   </Typography>
                   <div>
                     <Button
@@ -200,11 +201,11 @@ export default () => {
             <h2> Items in cart: {cart.length}</h2>
 
             <Typography variant="h4">
-              {" "}
-              Total : $
-              {cart
-                .map((object) => object.print.Price[0].value * object.quantity)
-                .reduce((a, b) => a + b, 0)}
+              {"Total : "}
+              
+              {currencyFormat(cart
+                .map((object) => object.print.currentPriceValue * object.quantity)
+                .reduce((a, b) => a + b, 0))}
             </Typography>
             {localStorage.getItem("token") && cart.length > 0 ? (
               <Button type="submit">Order now</Button>
