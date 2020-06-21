@@ -7,7 +7,8 @@ import {
   Typography, 
   Menu,
   MenuItem,
-  Fade  } 
+  Fade,
+  } 
   from '@material-ui/core';
 import {Link} from "react-router-dom";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -19,15 +20,15 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {currencyFormat} from '../helpers/moneyconvert'
 
 export default  ({checker, checked}) => {
-  const matches = useMediaQuery('(min-width:600px)');
+  const matches = useMediaQuery('(min-width:780px)');
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( theme =>({
   root: {
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    background: theme.palette.secondary.detail,
     border: 0,
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    boxShadow: 'rgba(19, 89, 19, .19)',
     color: 'white',
-    padding: '0 50px',
+
   },
   CartHover: {
     position: 'absolute',
@@ -51,6 +52,7 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'center',
         alignContent: 'center',
+
     },
   },
   Navigation: {
@@ -59,16 +61,24 @@ const useStyles = makeStyles({
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      overflow: 'visible',
+      overflow: 'contain',
 
       '& li': {
-          paddingRight: '20px',
-          marginRight: '10px',
+        padding: 0,
+        margin: 0,
+
+         [theme.breakpoints.up(780)]: { 
+
+            paddingRight: '20px',
+            marginRight: '10px',
+        },
+
       },
+
       '& li:hover': {
         'div': {
           display: 'block'
-        }
+        },
     },
       '& li a': {
         textDecoration: 'none',        
@@ -80,12 +90,26 @@ const useStyles = makeStyles({
       
       },
       '& li a:hover': {
-        color: 'black',
+        color: theme.palette.secondary.main,
 
       },
+      '& li button': {
+        textDecoration: 'none',        
+        color: 'white',
+        justifyContent: 'center',
+      },
+      '& li button:hover': {
+        color: theme.palette.secondary.main,
+
+      },
+      Title: {
+        display: 'flex',
+        flexDirecton: 'column',
+      }
+
     }
   
-});
+}));
 
 
 const data = useSelector((state) => ({
@@ -107,6 +131,8 @@ const handleClose = () => {
   setAnchorEl(null);
 };
 
+const[slide, setSlide]=useState(true);
+const[slideMessage, setSlideMessage]=useState('Van idee naar 3D')
 
 
 
@@ -114,24 +140,22 @@ return (
 <AppBar position="static" className={classes.root} >
   
   <Toolbar className={classes.toolbar}>
-  <img className={classes.images} src='/logo.png' alt='logo'></img>
+  {matches ? <img className={classes.images} src='/logo.png' alt='logo'></img> : ''}
 
-   {matches ?  <Typography variant="h2" >
-      3D-PrintDomain
-      <Typography variant='h6' align='center' color='textSecondary'> Van idee naar 3D!</Typography>
+   {matches ?  <div className={classes.Title}>
+   <Typography variant="h2" >
+      3D-PrintDomain    
+      
     </Typography>
+
+      <Typography variant='h6' align='center' >{slideMessage} </Typography>
+
+</div>
     : '' }
 
     <nav>
           <ul className={classes.Navigation}>
-         <Button aria-controls="fade-menu" aria-haspopup="true" onClick={handleClick}> <Badge 
-          badgeContent={CartTotal}
-          color="secondary">
 
-              <ShoppingCartIcon/>
-              
-            </Badge>
-              </Button>
               
               {data.cart ? 
               <Menu 
@@ -142,23 +166,22 @@ return (
               onClose={handleClose}
               TransitionComponent={Fade}
               >
-              {data.cart.map( object =>
+              {data.cart.map( (object,i) =>
                 
-                <MenuItem onClick={handleClose}>
-                  <li><Typography >{object.print.name} X {object.quantity}</Typography>
-                
-                <Typography color='secondary'>{currencyFormat(object.print.currentPriceValue * object.quantity)}</Typography></li>
+                <MenuItem onClick={handleClose} key={i}>
+                  <Typography >{object.print.name} X {object.quantity} = </Typography>
+                  <Typography color='secondary'>{currencyFormat(object.print.currentPriceValue * object.quantity)}</Typography>
                 </MenuItem>
                 ) }
-                <MenuItem onClick={handleClose}><li>Items: {CartTotal} </li></MenuItem>
-                <MenuItem onClick={handleClose}><li> Total:{currencyFormat(data.cart
+                <MenuItem onClick={handleClose}>Items: {CartTotal} </MenuItem>
+                <MenuItem onClick={handleClose}>Total:{currencyFormat(data.cart
                 .map((object) => object.print.currentPriceValue * object.quantity)
-                .reduce((a, b) => a + b, 0))} </li></MenuItem>
+                .reduce((a, b) => a + b, 0))} </MenuItem>
                    <MenuItem onClick={handleClose}>                
                    <Link to="/shopping-cart">
                   <Button color='secondary'>
-                Afrekenen : 
-              <ShoppingCartIcon/>
+                Place order : 
+              <ShoppingCartIcon />
               </Button></Link>    </MenuItem>
    
 
@@ -169,23 +192,42 @@ return (
             
             }
 
-
-
-
-            <li>
-              <Badge>
-              
-              <Link to="/profile">
-              <AccountCircleIcon/>
-            </Link>
-            </Badge>
-            </li>
-            <li>
+<li>
+              <Button>
               <Link to="/">
-                <HomeIcon/>
+                <HomeIcon fontSize='large'/>
               </Link>
+              </Button>
             </li>
-            <li><Button onClick={() => checker()}>  <SettingsIcon/></Button>
+
+
+            <li>
+              <Button>              
+                <Badge>
+              {localStorage.getItem('token')?
+              <Link to="/profile">             
+              <AccountCircleIcon fontSize='large'/>
+            </Link>
+            :
+            <Link to="/login">
+            <AccountCircleIcon fontSize='large'/>
+              </Link>
+            }
+
+            </Badge>
+            </Button>
+
+            </li>
+
+            <li>     <Button aria-controls="fade-menu" aria-haspopup="true" onClick={handleClick}> 
+   
+   <Badge 
+    badgeContent={CartTotal}
+    color="secondary">
+        <ShoppingCartIcon fontSize='large'/>
+      </Badge>
+</Button></li>  
+            <li><Button onClick={() => checker()}>  <SettingsIcon fontSize='large' /></Button>
               
             </li>
             <li>

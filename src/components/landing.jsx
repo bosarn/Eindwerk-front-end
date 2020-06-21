@@ -6,10 +6,9 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Skeleton from "@material-ui/lab/Skeleton";
-import { Button, CircularProgress, Box, TextField, Snackbar, Chip } from "@material-ui/core";
+import { Button, CircularProgress, Box, TextField, Chip } from "@material-ui/core";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import React, { useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { getObjects } from "../data/objects";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -19,6 +18,11 @@ import { useState } from "react";
 import {Pagination, Alert} from "@material-ui/lab";
 import DoneIcon from '@material-ui/icons/Done';
 import {currencyFormat} from '../helpers/moneyconvert'
+import { toggleFilter } from "../data/filter";
+import Snackbar from './Snackbar';
+import {ToastDashMessage} from '../data/snackbar'
+import { ThemeProvider, useTheme, makeStyles } from '@material-ui/core/styles';
+import { shadows } from '@material-ui/system';
 
 export default () => {
   const dortor = useSelector((state) => ({
@@ -30,16 +34,16 @@ export default () => {
   const { filter } = dortor;
   const dispatch = useDispatch();
 
-  //getobjects with searchvalue in url objects?name='value'
+  
 
   useEffect(() => {
     dispatch(getObjects());
   }, [dispatch]);
 
-  const useStyles = makeStyles({
+  const useStyles = makeStyles((theme) => ({
     root: {
-      background:
-        "linear-gradient(0deg, rgba(255,0,0,.3), rgba(255,0,0,0) 70.71%)",
+      background: `linear-gradient(180deg, ${theme.palette.secondary.main} 1% , #eee 2% , #fff 4% , ${theme.palette.secondary.detail} 100%)`,
+      //background: '#e3e1da',
       padding: "5px",
       width: "250px",
     },
@@ -54,20 +58,23 @@ export default () => {
     },
     link: {
       textDecoration: "none",
+      color: theme.palette.primary.detail,
     },
     textalign:{
       display: 'flex',
       justifyContent: 'center',
     },
     textfield: {
-           
-      width: "20%",
+      color: theme.palette.secondary.detail,
+      width: "40%",
       marginTop: "2em",
     },
     loading: {
       position: "absolute",
-      marginLeft: "40%",
+      marginLeft: "50%",
       marginTop: "50vh",
+      color: theme.palette.secondary.detail,
+
     },
     Pages: {
       display: "flex",
@@ -91,10 +98,12 @@ export default () => {
           marginLeft: '10px'
       },
 
+
     }
-  });
+  }));
 
   const classes = useStyles();
+
 
   // Filter data by filterstate , then map all data into the  html
   // array of categories per object
@@ -117,7 +126,7 @@ export default () => {
     );
   }
 
-  const postsPerPage = 10;
+  const postsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -129,44 +138,35 @@ export default () => {
   };
 
   const [textFieldValue, settextFieldValue] = useState('');
-  const [open, setOpen] = useState(false);
+
   // total of objects / postperpage
 
   const totalObjects = filteredobjects.length;
 
   const pageNumbers = Math.ceil(totalObjects / postsPerPage);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
 
-    setOpen(false);
-  };
 
   const submitHandler = (e) => {
     e.preventDefault()
     dispatch(getObjects(textFieldValue))
 
   }
-  const handleDelete = () => {
-    console.info('You clicked the delete icon.');
+  const handleDelete = (filter) => {
+
+    dispatch(toggleFilter(filter))
   };
 
   const handleClickChip = () => {
     console.info('You clicked the Chip.');
   };
 
-
   return (
-    <>
-
+<>
       <div className={classes.Pages}>
       <form className={classes.textalign} onSubmit={submitHandler}>
-        <TextField className={classes.textfield} id="outlined-basic" label="Search prints" variant="outlined"  
+        
+        <TextField className={classes.textfield} id="outlined-secondary" label="Search prints..." variant="outlined"  color='secondary'
         onChange={(e) => {settextFieldValue(e.target.value)}}/>
 
       </form>
@@ -175,8 +175,7 @@ export default () => {
           <CircularProgress
             className={classes.loading}
             display={"block"}
-            size={100}
-            color="secondary"
+            size={100}            
           />
         )}
 
@@ -188,27 +187,26 @@ export default () => {
       className={classes.chip}
       clickable={true}
       onClick={handleClickChip}
-      color="secondary"
-      
-      
-      onDelete={handleDelete}
+      onDelete={()=>handleDelete(filter)}
+      color='secondary'
     />
   </li>
     )}
     </ul>
         <Grid
           container
-          spacing={2}
+          spacing={1}
           justify="center"
           alignItems="center"
           className={classes.container}
         >
-          {(loading ? Array.from(new Array(10)) : ObjectsPaged).map(
+          {(loading ? Array.from(new Array(20)) : ObjectsPaged).map(
             (object, i) => (
               <Grid item key={object ? object["@id"] : i}>
-                <Card className={classes.root}>
+<Box  boxShadow={3}>
+                <Card  className={classes.root}                >
                   
-                  <Typography gutterBottom variant="body1" color="secondary" align='center'>
+                  <Typography gutterBottom variant="body1" color='primary' align='center'>
                     {object ? (
                       currencyFormat(object.currentPriceValue)
                     ) : (
@@ -233,7 +231,7 @@ export default () => {
                         }}
                       >
                         <CardMedia
-                          title={object.printTime}
+                          title={object.name}
                           image={
                             process.env.REACT_APP_BASE_PATH +
                             object.images[0].path
@@ -245,9 +243,8 @@ export default () => {
                         <CardContent>
                           <Typography
                             align='center'
-                            variant="h4"
-                            color="textSecondary"
-                            component="p"
+                            variant="h5"
+    
                           >
                             {object.name}
                           </Typography>
@@ -266,16 +263,15 @@ export default () => {
                           animation="wave"
                           height={14}
                           width={"80%"}
-                          marginTop={"50"}
+                          margintop={"50"}
                         />
                       </Box>
                     )}
                   </CardActionArea>
 
-                  <CardActions>
-                    <Typography variant="body1"></Typography>
-                  </CardActions>
+
                 </Card>
+                </Box>
               </Grid>
             )
           )}
@@ -287,37 +283,8 @@ export default () => {
           onChange={handleChange}
           variant="outlined"
         />
-        {error !== "" && 
-        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="error">
-              {error}
-            </Alert>
-        </Snackbar>}
       </div>
     </>
   );
 };
 
-/**
- * 
- * Pagination
- * Summon all pages subsequently
- * limit objects on client side throgh filterdata
- * button show next 20
- * 
- * Paginated data
- * from filterdata
- *  data[]
- *  page
- *  
- * 
- *    const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
- * 
-  const paginate = pageNumber => setCurrentPage(pageNumber);
-
-
-
-  array promises foreach await promises 
- */

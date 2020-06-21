@@ -10,23 +10,21 @@ export default ({checker, checked}) => {
 
   const matches = useMediaQuery('(min-width:600px)');
 
-  const useStyles = makeStyles({
+  const useStyles = makeStyles(theme=>({
     root: {
-
-      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-      //'linear-gradient(180deg, rgba(255,255,255,1) 17%, rgba(232,232,232,1) 39%, rgba(210,210,210,1) 54%, rgba(215,215,215,1) 79%, rgba(235,235,235,1) 100%)',
+      zIndex: 999999,
+      background: theme.palette.secondary.detail,
       listStyleType: "none",
-      color: "black",
-
+      color: theme.palette.secondary.main,
       height: "100vh",
       position: 'absolute',
       width: "100vw",
       display: "flex",
       flexDirection: "column",
-      ['@media (min-width:780px)']: { 
-        width: '15%',
+      [theme.breakpoints.up(780)] : { 
+        width: '20%',
         position: 'initial',
-        background: "linear-gradient(0deg, rgba(255,0,0,.3), rgba(255,0,0,0) 70.71%)",
+        background: '#fff',
       },
 
       "& li": {
@@ -34,7 +32,7 @@ export default ({checker, checked}) => {
       },
          
     },
-  });
+  }));
 
   const dispatch = useDispatch();
 
@@ -60,16 +58,14 @@ export default ({checker, checked}) => {
     //console.log(data.cart);
 
   };
-
-  const filterHandler = (e) => {
-      if(e.target.innerText != '') {
-        dispatch(toggleFilter(e.target.innerText));
-      }
-      else {
-        dispatch(toggleFilter(e.target.name));
-      }
-    
-    
+const logout=(e)=>{
+    e.preventDefault()
+    console.log(localStorage.getItem('token'))
+    localStorage.removeItem('token')
+    console.log(localStorage.getItem('token'))
+}
+  const filterHandler = (filter) => {
+        dispatch(toggleFilter(filter));
   };
 
 
@@ -96,15 +92,15 @@ export default ({checker, checked}) => {
             <Checkbox
               label={category}
               type="checkbox"
-              onChange={filterHandler}
+              onChange={()=>filterHandler(category)}
               checked={ filter.filters ? filter.filters.includes(category) : false}
               name={category}
             ></Checkbox>
             <Chip
-            color={"secondary"}
+            color="secondary"
             label={category}
             name={category}
-            onClick={filterHandler}
+            onClick={()=>filterHandler(category)}
              >{category}</Chip>
           </li>
         ))}
@@ -112,6 +108,12 @@ export default ({checker, checked}) => {
           <Button type="submit" value="check filter state">
 
             States
+          </Button>
+        </form>
+        <form onSubmit={logout}>
+          <Button type="submit" value="logout" color='secondary' variant='contained'>
+
+            Log out
           </Button>
         </form>
       </ul>

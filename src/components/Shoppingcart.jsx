@@ -34,29 +34,29 @@ export default () => {
   }));
   const { cart } = data;
 
-  const useStyles = makeStyles({
+  const useStyles = makeStyles(theme => ({
     root: {
-      width: "40%",
+      width: "80%",
       marginTop: "3rem",
       marginLeft: "3em",
     },
     divider: {
       marginTop: "3rem",
-      marginRight: "3em",
-      width: "40%",
-      padding: "0 3em",
+      marginBottom: '3em',
+      width: "100%",
+
       display: "flex",
       flexDirection: "column",
     },
     form: {
+      width: '100%',
       justifyContent: "center",
       alignItems: "center",
-
       display: "flex",
       flexDirection: "column",
       color: "grey",
       "& form": {
-        borderTop: "20px solid pink",
+        borderTop: `20px solid ${theme.palette.secondary.detail}`,
         display: "flex",
         flexDirection: "column",
         width: "100%",
@@ -66,7 +66,8 @@ export default () => {
 
         "& button": {
           padding: "1em",
-          background: "pink",
+          background: theme.palette.secondary.detail,
+          color: theme.palette.secondary.main,
         },
       },
     },
@@ -77,7 +78,7 @@ export default () => {
       display: "block",
     },
     panel: {
-      borderTop: "20px solid pink",
+      borderTop: `20px solid ${theme.palette.secondary.detail}`,
       display: "flex",
       flexDirection: "column",
       width: "100%",
@@ -88,7 +89,7 @@ export default () => {
       justifyContent: "space-between",
       alignItems: "center",
     },
-  });
+  }));
   const classes = useStyles();
 
   const submitHandler = (e) => {
@@ -102,11 +103,10 @@ export default () => {
   };
 
   let shippingmessage = JSON.stringify({
-    description: "origin site real data",
-    status: "sent",
-    shippingAdress: "if is set with hook input else leave blank",
+    status: "Received",
+    shippingAdress: "TODO",
     details: cart.map((object) => ({
-      quantity: object.quantity,
+      quantity: parseInt(object.quantity),
       objectStatus: "status",
       objects: object.print["@id"],
     })),
@@ -139,16 +139,16 @@ export default () => {
   return (
     <>
       <Paper className={classes.root}>
-        {cart.map((object) => (
-          <>
-            <ExpansionPanel className={classes.panel}>
+        {cart.map((object, i) => (
+          
+            <ExpansionPanel className={classes.panel} key={i}>
               <ExpansionPanelSummary
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
                 <div className={classes.test}>
-                  <Typography className={classes.heading}>
-                    <h4>{object.print.name}</h4> {currencyFormat(object.print.currentPriceValue)} X
+                  <div className={classes.heading}>
+                    <Typography variant='h4'>{object.print.name}</Typography> {currencyFormat(object.print.currentPriceValue)} X
                     <form>
                       <input
                         onChange={(e) =>
@@ -163,7 +163,7 @@ export default () => {
                       ></input>
                     </form>
                     {currencyFormat(object.print.currentPriceValue * object.quantity)}
-                  </Typography>
+                  </div>
                   <div>
                     <Button
                       onClick={() => dispatch(removeItemFromCart(object.print))}
@@ -177,7 +177,7 @@ export default () => {
                         object.print.images[0].path
                       }
                       component="img"
-                      maxHeight="50px"
+                      maxheight="50px"
                     />
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export default () => {
                 </Typography>
               </ExpansionPanelDetails>
             </ExpansionPanel>
-          </>
+          
         ))}
       </Paper>
 
@@ -209,17 +209,19 @@ export default () => {
             </Typography>
             {localStorage.getItem("token") && cart.length > 0 ? (
               <Button type="submit">Order now</Button>
-            ) : (
+            ) : <>
               <Button type="submit" disabled>
-                {" "}
-                Log in/ Fill basket
+                
+                {'Log in/ Fill basket'}
               </Button>
-            )}
+              <Link to={{ pathname: `/login`}}> Go to Login</Link>
+              </>
+            }
           </form>
         </Paper>
         <Paper className={classes.form}>
           <h2> Shipping: </h2>
-          <label for="inputfield"> Change Shipping adress:</label>
+          <label htmlFor="inputfield"> Change Shipping adress:</label>
           <input name="inputfield" type="text" />
           <Typography>Shipping fee : $5</Typography>
           <Typography>

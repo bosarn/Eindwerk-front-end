@@ -33,11 +33,10 @@ export default (props) => {
     dispatch(getObject(props.match.params.id));
   }, []);
 
-  const useStyles = makeStyles({
+  const useStyles = makeStyles(theme => ({
     root: {
-      marginTop: "3rem",
-      marginLeft: "3em",
       display: "flex",
+      width: '100%',
     },
     width: {
       width : '100%',
@@ -48,19 +47,25 @@ export default (props) => {
       flexFlow: "wrap",
       borderTop: "1px solid grey",
       marginTop: "3px",
+
     },
     headimage: {},
     slider: {
+      
       width: "80px",
       height: "80px",
       marginRight: '2px',
+      '&:hover' : {
+          border: `2px solid ${theme.palette.secondary.main}`
+      },
     },
     carousel: {
       display: "flex",
+      marginLeft: 'auto',
+      marginRight: 'auto',
       flexDirection: "column",
-      width: "40%",
+      width: "70%",
       padding: "1em",
-      border: "1px solid grey",
     },
     panel: {
       display: "flex",
@@ -80,20 +85,29 @@ export default (props) => {
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
 
+    },
+    description :{
+      width: '100%',
+      marginTop: '3em',
+      borderTop: '1px solid grey',
+
+
     }
-  });
+  }));
   const classes = useStyles();
 
   return (
 <>
-    <Container maxWidth="l">
-      <Typography className={classes.title} variant="h3">
+
+
+      <Paper className={classes.root}>
+        
+        <div className={classes.carousel}>
+        <Typography className={classes.title} variant="h3" align='center'>
         {object.data.name}
       </Typography>
-      <Paper className={classes.root}>
-        <div className={classes.carousel}>
-
           {object.data.images  ? (
+            
             <CardMedia
               onClick={() =>
                 dispatch(
@@ -109,7 +123,7 @@ export default (props) => {
                 process.env.REACT_APP_BASE_PATH +
                 object.data.images[ carousel+1 > object.data.images.length ?  0 : carousel].path
               }
-              maxHeight="50px"
+
             />
           ) : (
             <Box pt={0.5}>
@@ -126,6 +140,7 @@ export default (props) => {
             {(object.data.images ? object.data.images : Array.from(new Array(3))).map((image, i) => (
                 object.data.images ? 
                   <CardMedia
+                    key={i}
                     onClick={() => dispatch(setCarousel(i))}
                     className={classes.slider}
                     title={image.name}
@@ -135,7 +150,7 @@ export default (props) => {
                 
                :
               
-                <Box pt={0.5}>
+                <Box pt={0.5} key={i}>
                 <Skeleton
                   className={classes.slider}
                   animation="wave"
@@ -148,23 +163,14 @@ export default (props) => {
 
           </div>
         </div>
-        
+        </Paper>
         
         <Container className={classes.panel}>
-       
+        <Typography className={classes.title} variant="h4" align='center'>
+        {object.data.name}
+      </Typography>
 
-          <ul>
-            {object.data.Categories
-              ? object.data.Categories.map((category) => (
-                <Chip
 
-                label={category.name}
-                clickable={true}
-                color="secondary"
-              />
-                ))
-              : "Loading"}
-          </ul>
 
         
           {object.data.printTime ? 
@@ -173,7 +179,7 @@ export default (props) => {
             Print-time : {object.data.printTime}
           </Typography>
           <Typography variant="h5"> Size: {object.data.size} </Typography>
-          <Typography variant="h5"> {object.data.description}</Typography>
+
           </div>
           :
           <div className={classes.width}>
@@ -182,10 +188,7 @@ export default (props) => {
           <Skeleton animation="wave" height={17} width={'100%'} />
           <Skeleton animation="wave" height={20} width={'100%'} />
           </div>}
-          
-        </Container>
-
-    <Typography gutterBottom variant="h5" color="secondary" className={classes.money}>
+          <Typography gutterBottom variant="h5" color="primary" className={classes.money}>
                 {object ? (
                   <Button onClick={() => dispatch(pushItemToCart(object.data))}>
                     <AddShoppingCartIcon fontSize={'large'} />
@@ -201,8 +204,28 @@ export default (props) => {
 
               </Typography>
 
-      </Paper>
-    </Container>
+              <ul>
+            {object.data.Categories
+              ? object.data.Categories.map((category) => (
+                <Chip
+
+                label={category.name}
+                clickable={true}
+                color="secondary"
+              />
+                ))
+              : "Loading"}
+          </ul>
+                <Paper className={classes.description}>
+                  <Typography variant='h4' align='center'>Description</Typography>
+                {object.data.description ? 
+                <Typography variant="h5" align='center' dangerouslySetInnerHTML={{__html: object.data.description}} ></Typography> : 'There is no description at the time, apologies!' }
+
+                </Paper>
+          
+        </Container>
+
+
 
               </>
   );

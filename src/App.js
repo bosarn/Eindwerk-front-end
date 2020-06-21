@@ -16,25 +16,45 @@ import Footer from './components/Footer'
 import Detail from './components/Detail'
 import Shoppingcart from './components/Shoppingcart';
 import Profile from './components/Profile'
-import TEST from './components/TEST'
-import Orders from './components/Orders'
-
-
-
+import Categories from './components/Categories'
+import { createMuiTheme } from '@material-ui/core/styles';
+import {blueGrey, red } from '@material-ui/core/colors/';
+import { ThemeProvider } from '@material-ui/core/styles';
+import Register from "./components/Register"
+import Snackbar from './components/Snackbar'
 
 
 function App() {
 
   const [checked, setChecked] = useState(false);
+  const theme = createMuiTheme({
+    palette: {
+      type: 'light',
+      primary: {
+        main: red[500],
+        detail: '#ddd'
+      },
+      secondary: {
+        detail: '#263238',
+        main: '#607d8b'
+      }
+    },
+    status: {
+      danger: 'orange',
+    },
+  });
 
 const handleChange = () => {
   setChecked((prev) => !prev);
 };
 
 
+
   return (
     <Provider store={store} > 
+    <ThemeProvider theme ={theme}>
     <Router>
+      <Snackbar/>
     <Header checker={handleChange} checked={checked}/>
     <div className='partager'>
 
@@ -43,33 +63,33 @@ const handleChange = () => {
 
     <Route path='/login'>
       <Login/>
+      <Register/>
     </Route>
 
-    <Route path='/orders'>
-      <Orders/>
-    </Route>
 
     <Route path='/profile'>
       <Profile/>
     </Route>
 
     <Route exact path="/" >
+      <div className='flexcol'>
       <Landing/>
+      <Categories/>
+      </div>
     </Route>
     <Route path="/wdev_arno/eindwerk/api/objects/:id/:title" render={(props)=> <Detail {...props}/>}/>   
 
     <Route path='/shopping-cart'>
       <Shoppingcart/>
     </Route>
-    <Route path='/test'>
-      <TEST/>
-    </Route>
+
 
     </Switch>
     <Sidebar checked ={checked} checker={handleChange}/>
     </div>
     </Router>
       <Footer/>
+      </ThemeProvider>
     </Provider> 
   );
 }

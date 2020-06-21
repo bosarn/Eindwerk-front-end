@@ -3,19 +3,27 @@ import {useState} from 'react'
 import axios from 'axios';
 import {makeStyles} from "@material-ui/core/styles";
 import {Button} from "@material-ui/core"
+import {ToastDashMessage} from '../data/snackbar'
+import {useDispatch} from 'react-redux'
+
 
 export default () => {
 
-    const useStyles = makeStyles({
+    const useStyles = makeStyles( theme => ({
         flex: {
           display: 'flex',
           width: '100%',
           justifyContent: 'space-around'
         },
+        spacer:{
+          marginRight: 'auto',
+          marginLeft: 'auto',
+            width: '70%'
+        },
         form: {
           marginTop: '5em',
-          padding: "0 3em",
-          width:'30%',
+
+          width:'100%',
           position: "relative",
           justifyContent: "center",
           alignItems: "center",
@@ -23,7 +31,7 @@ export default () => {
         },
       
         loginForm: {
-          borderTop: '20px solid pink',
+          borderTop: `20px solid ${theme.palette.secondary.detail}`,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -39,22 +47,22 @@ export default () => {
       
         },
         button:{
-            background: 'pink',
-            color: '#921002',
-            fontWeight: 'bolder',
-        },
-        Title:{
-            color: '#921002',
-            display: 'flex',
-            justifyContent: 'center',
-            fontSize: '1em'
-        }
+          background: theme.palette.secondary.detail,
+          color: theme.palette.secondary.main,
+          fontWeight: 'bolder',
+      },
+      Title:{
+        color: theme.palette.secondary.main,
+        display: 'flex',
+        justifyContent: 'center',
+        fontSize: '1em'
+    }
       
-      });
+      }));
       
 
 
-
+const dispatch=useDispatch();
 
 const classes = useStyles();
 
@@ -88,7 +96,7 @@ const classes = useStyles();
           })
           .then(
             res => {
-            console.log(res)
+              dispatch(ToastDashMessage('Registered account', 'success'))
             
             
              
@@ -100,6 +108,7 @@ const classes = useStyles();
 
 return (
 <div className={classes.form}>
+  <div className={classes.spacer}>
 <h1 className={classes.Title}> Register </h1>
       <form onSubmit={submitHandler} className={classes.loginForm}>
       <h2 className={classes.Title}>E-mail:</h2>
@@ -156,6 +165,7 @@ return (
             Register
             </Button>    
       </form>
+      </div>
       </div>
       
 )

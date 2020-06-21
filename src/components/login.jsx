@@ -3,18 +3,25 @@ import {useState} from 'react'
 import axios from 'axios';
 import {makeStyles} from "@material-ui/core/styles";
 import {Button} from "@material-ui/core"
-import Register from "./Register"
+import {ToastDashMessage} from '../data/snackbar'
+import {useDispatch} from 'react-redux'
 
-const useStyles = makeStyles({
+
+
+const useStyles = makeStyles((theme) => ({
   flex: {
     display: 'flex',
     width: '100%',
     justifyContent: 'space-around'
   },
+  spacer:{
+    width: '70%',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+},
   form: {
     marginTop: '5em',
-    padding: "0 3em",
-    width:'30%',
+    width:'100%',
     position: "relative",
     justifyContent: "center",
     alignItems: "center",
@@ -22,7 +29,7 @@ const useStyles = makeStyles({
   },
 
   loginForm: {
-    borderTop: '20px solid pink',
+    borderTop: `20px solid ${theme.palette.secondary.detail}`,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -38,23 +45,23 @@ const useStyles = makeStyles({
 
   },
   button:{
-      background: 'pink',
-      color: '#921002',
+      background: theme.palette.secondary.detail,
+      color: theme.palette.secondary.main,
       fontWeight: 'bolder',
   },
   Title:{
-      color: '#921002',
+      color: theme.palette.secondary.main,
       display: 'flex',
       justifyContent: 'center',
       fontSize: '1em'
   }
 
-});
+}));
 
 
 export default () => {
 const classes = useStyles();
-
+const dispatch = useDispatch()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("")
@@ -83,7 +90,7 @@ const classes = useStyles();
           })
           .then(
             res => {
-            console.log(res)
+            dispatch(ToastDashMessage('Login Successfull', 'success'))
             const webToken = res.data.token
             localStorage.setItem('token', webToken);
             console.log(localStorage.getItem('token'))   
@@ -92,8 +99,9 @@ const classes = useStyles();
     
 
     return (
-      <div className={classes.flex}>
+
 <div className={classes.form}>
+  <div className={classes.spacer}>
   <h1 className={classes.Title}> Log in </h1>
         <form onSubmit={submitHandler} className={classes.loginForm}>
         <h2 className={classes.Title}>E-mail:</h2>
@@ -122,8 +130,7 @@ const classes = useStyles();
               </Button>    
         </form>
         </div>
-              <Register/>
-              </div>
+</div>
 
     );
 }

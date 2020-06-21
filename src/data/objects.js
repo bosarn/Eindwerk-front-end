@@ -1,4 +1,7 @@
 import axios from "axios";
+import {ToastDashMessage} from './snackbar'
+
+
 
 /*****************/
 /* INITIAL STATE */
@@ -37,7 +40,8 @@ export const getObjects = (str) => (dispatch) => {
     .get(`${process.env.REACT_APP_API_URL}objects?page=1&name=${search}`)
     .then((res) => {
       if (res.data["hydra:member"].length === 0) {
-        dispatch(setError("No objects found"));
+        dispatch(ToastDashMessage("No objects found",'warning'))
+        dispatch(setError("No objects found"))
       } else {
         
         dispatch(setObjects(
@@ -133,6 +137,8 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case FETCH_OBJECTS_ERROR:
+
+ToastDashMessage(payload)
       return {
         ...state,
         loading: false,

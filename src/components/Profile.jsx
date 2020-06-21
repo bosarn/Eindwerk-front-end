@@ -1,21 +1,22 @@
 import React from 'react'
 
 import {makeStyles} from "@material-ui/core/styles";
-import {Button} from "@material-ui/core"
+import {Button, Paper} from "@material-ui/core"
+import Orders from './Orders'
+
 
 export default () => {
 
 
-    const useStyles = makeStyles({
+    const useStyles = makeStyles(theme => ({
         flex: {
           display: 'flex',
           width: '100%',
           justifyContent: 'space-around'
         },
         form: {
-          marginTop: '5em',
-          padding: "0 3em",
-          width:'30%',
+          marginTop: '3em',
+          width:'100%',
           position: "relative",
           justifyContent: "center",
           alignItems: "center",
@@ -23,7 +24,10 @@ export default () => {
         },
       
         loginForm: {
-          borderTop: '20px solid pink',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          width: '80%',
+          borderTop: `20px solid ${theme.palette.secondary.detail}`,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -39,18 +43,18 @@ export default () => {
       
         },
         button:{
-            background: 'pink',
-            color: '#921002',
+            background: theme.palette.secondary.detail,
+            color: theme.palette.secondary.main,
             fontWeight: 'bolder',
         },
         Title:{
-            color: '#921002',
+            color: theme.palette.secondary.main,
             display: 'flex',
             justifyContent: 'center',
             fontSize: '1em'
         }
       
-      });
+      }));
       
 
 
@@ -61,9 +65,9 @@ const classes = useStyles();
 
 
     return (
-
-        <div className={classes.form}>
-        <h1 className={classes.Title}> Register </h1>
+<>
+        <Paper className={classes.form}>
+        <h1 className={classes.Title}> Change user details </h1>
               <form  className={classes.loginForm}>
               <h2 className={classes.Title}>E-mail:</h2>
                   <input  
@@ -116,10 +120,9 @@ const classes = useStyles();
                     Register
                     </Button>    
               </form>
-
-
-              <div> ORDERS LISTED ON RGHT </div>
-              </div>
+              </Paper>
+              <Orders/>
+              </>
               
         )
 }
