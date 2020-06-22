@@ -1,10 +1,10 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector,useDispatch } from "react-redux";
 import { toggleFilter } from "../data/filter";
 import { Checkbox, Button, Slide, Chip } from "@material-ui/core";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
+import {setAllCategories} from '../data/filter'
 
 export default ({checker, checked}) => {
 
@@ -38,6 +38,7 @@ export default ({checker, checked}) => {
 
 
 
+
   const classes = useStyles();
 
   const data = useSelector((state) => ({
@@ -53,17 +54,16 @@ export default ({checker, checked}) => {
 
   const log = (e) => {
     e.preventDefault();
-    console.log(filter.filters)
+    console.log(filter)
     //console.log(objects)
     //console.log(data.cart);
 
   };
 const logout=(e)=>{
     e.preventDefault()
-    console.log(localStorage.getItem('token'))
     localStorage.removeItem('token')
-    console.log(localStorage.getItem('token'))
 }
+
   const filterHandler = (filter) => {
         dispatch(toggleFilter(filter));
   };
@@ -79,6 +79,8 @@ const logout=(e)=>{
   const filtered = (categories) =>
     categories.filter((v, i) => categories.indexOf(v) === i);
   const allCategories = filtered(merged);
+
+ 
 
   return (
     

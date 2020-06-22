@@ -17,12 +17,14 @@ import { pushItemToCart } from "../data/shoppingcart";
 import { useState } from "react";
 import {Pagination, Alert} from "@material-ui/lab";
 import DoneIcon from '@material-ui/icons/Done';
-import {currencyFormat} from '../helpers/moneyconvert'
+import {saleCalculator} from '../helpers/moneyconvert'
 import { toggleFilter } from "../data/filter";
 import Snackbar from './Snackbar';
 import {ToastDashMessage} from '../data/snackbar'
 import { ThemeProvider, useTheme, makeStyles } from '@material-ui/core/styles';
 import { shadows } from '@material-ui/system';
+
+
 
 export default () => {
   const dortor = useSelector((state) => ({
@@ -34,21 +36,61 @@ export default () => {
   const { filter } = dortor;
   const dispatch = useDispatch();
 
-  
+
 
   useEffect(() => {
     dispatch(getObjects());
+
   }, [dispatch]);
 
   const useStyles = makeStyles((theme) => ({
     root: {
       background: `linear-gradient(180deg, ${theme.palette.secondary.main} 1% , #eee 2% , #fff 4% , ${theme.palette.secondary.detail} 100%)`,
-      //background: '#e3e1da',
       padding: "5px",
       width: "250px",
+      
+    },
+    money: {
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      display: 'flex',
+      flexDirection: 'row', 
+      '& div' : {
+        textAlign: 'center',
+        display: 'flex', 
+        flexDirection: 'column', 
+        width: '100%',
+      }
+    },
+    shoppingcart: {
+      position: 'relative',
+
     },
     button: {
       marginLeft: "50%",
+    },
+    caption: {
+      position: 'absolute',
+      opacity: '0',
+      Zindex: '99999999999',  
+      width: '100%',
+      height: '250px',
+      left: 0,
+      top: 0,
+      background: 'rgba( 0, 0, 0, 0.3)',
+      '&:hover': {
+        opacity: '1',
+        left: 0,
+        top:0,
+        '& p': {
+          opacity: '1',
+        },
+      },
+      '& p' : {
+        textAlign: 'center',
+        color: 'rgba(f,f,f,1)',
+        opacity: '0',
+      }
     },
     container: {
       marginTop: "4rem",
@@ -97,9 +139,8 @@ export default () => {
       '& li' : {
           marginLeft: '10px'
       },
+    },
 
-
-    }
   }));
 
   const classes = useStyles();
@@ -125,6 +166,7 @@ export default () => {
       object.Categories.some((category) => filterArray.includes(category.name))
     );
   }
+
 
   const postsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
@@ -203,24 +245,26 @@ export default () => {
           {(loading ? Array.from(new Array(20)) : ObjectsPaged).map(
             (object, i) => (
               <Grid item key={object ? object["@id"] : i}>
-<Box  boxShadow={3}>
-                <Card  className={classes.root}                >
+            <Box  boxShadow={3}>
+                <Card  className={classes.root}>
                   
-                  <Typography gutterBottom variant="body1" color='primary' align='center'>
+                    <div className={classes.money}>
+                      <div>
                     {object ? (
-                      currencyFormat(object.currentPriceValue)
+                      saleCalculator(object.currentPriceValue, object.Price.slice(-2)[0].value , object.Price.slice(-1)[0].description)
+                     
                     ) : (
                       <Skeleton animation="wave" height={10} width="40%" />
                     )}
-
+</div>
                     {object ? (
-                      <Button onClick={() => dispatch(pushItemToCart(object))}>
+                      <Button className={classes.shoppingcart} onClick={() => dispatch(pushItemToCart(object))}>
                         <AddShoppingCartIcon />
                       </Button>
                     ) : (
                       <AddShoppingCartIcon color="disabled" />
                     )}
-                  </Typography>
+                    </div>
                   <CardActionArea>
                     {object ? (
                       <Link
@@ -230,6 +274,9 @@ export default () => {
                           state: { message: "hello, im a passed message!" },
                         }}
                       >
+                        <div className={classes.caption}>
+                        <p>{object.images[0].description}</p>
+                        </div>
                         <CardMedia
                           title={object.name}
                           image={
@@ -237,8 +284,10 @@ export default () => {
                             object.images[0].path
                           }
                           component="img"
-                          maxheight="300px"
-                        />
+                          maxheight="250px"
+                        />                        
+
+                   
 
                         <CardContent>
                           <Typography
@@ -288,3 +337,26 @@ export default () => {
   );
 };
 
+// check currentprice if currentprice is lower than price before that in array 
+// show previousprice and currentprice + description
+// calculate the % of price drop
+
+
+/**
+ * currencyFormat(object.currentPriceValue)
+ * 
+ * const previousvalue = object.Price.slice(-2)[0].value
+ * const currentprice = object.currentPriceValue
+ * 
+ * 
+ * if previousvalue > currentprice {
+ *        const percent = parseInt(currentprice/previousvalue)
+ *        const salepercent = 100-percent
+ *      return currencyFormat(previousvalue) + currencyFormat(currentprice) + salepercent+'%' + previousvalue.description
+ *        }
+ * else {
+ *    return currencyFormat(currentprice)
+ * }
+ * 
+ * 
+ *  */                      

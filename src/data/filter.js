@@ -5,6 +5,7 @@
 /*****************/
 const initialState = {
     filters: [],
+    allCategories: []
   };
   
   /*********/
@@ -12,7 +13,7 @@ const initialState = {
   /*********/
   const GETFILTERS = "GETFILTERS";
   const TOGGLE_FILTERS = "TOGGLE_FILTERS";
-
+  const ALLCATEGORIES = 'ALLCATEGORIES'
   
   /*******************/
   /* ACTION CREATORS */
@@ -24,6 +25,11 @@ const initialState = {
     type: TOGGLE_FILTERS,
     payload: filterName,
   });
+
+  export const setAllCategories = ( categories) => ({
+    type: ALLCATEGORIES,
+    payload: categories,
+  })
   
  
   
@@ -48,10 +54,13 @@ const initialState = {
             
               state.filters.push(payload)
           }
-        return {
-          ...state
+        return {...state};
+      case ALLCATEGORIES:
 
-        };
+          return {
+              allCategories: payload,
+              ...state
+          }
   
       default:
         return state;

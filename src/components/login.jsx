@@ -93,7 +93,6 @@ const dispatch = useDispatch()
             dispatch(ToastDashMessage('Login Successfull', 'success'))
             const webToken = res.data.token
             localStorage.setItem('token', webToken);
-            console.log(localStorage.getItem('token'))   
           })
     }
     

@@ -113,7 +113,7 @@ export default () => {
   });
 
   const sendOrder = (data) => {
-    console.log(localStorage.getItem('token'))
+
     axios({
       
       method: "post",

@@ -39,6 +39,7 @@ export const getObjects = (str) => (dispatch) => {
   axios
     .get(`${process.env.REACT_APP_API_URL}objects?page=1&name=${search}`)
     .then((res) => {
+      console.log(res.data)
       if (res.data["hydra:member"].length === 0) {
         dispatch(ToastDashMessage("No objects found",'warning'))
         dispatch(setError("No objects found"))

@@ -67,6 +67,24 @@ footer p {
   font-size: 12px;
   margin-top: 5px;
 }
+.salepercent{
+    color: black;
+    font-size:  0.8em;
+}
+.saleStyle {
+ position: relative;
+ margin-bottom: 0;
+ margin-left: auto;
+ margin-right: auto;
+
+}
+.saleperccent{
+
+  padding-top:  0.8em;
+  display: hidden;
+}
+
+
 
 @media only screen and (max-width: 600px) {
   .partager {

@@ -1,17 +1,16 @@
 import { useSelector,useDispatch } from "react-redux";
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import { makeStyles } from "@material-ui/core/styles";
 import {  
   Paper, 
-  Toolbar ,
-  Typography, 
-  Menu,
-  MenuItem,
-  Fade  } 
+  Typography,
+ } 
   from '@material-ui/core';
 
 
 export default () => {
+
+const dispatch = useDispatch();
 
 
     const useStyles = makeStyles( theme =>({
@@ -24,11 +23,15 @@ export default () => {
 
       const classes = useStyles();
 
+    
+console.log()
+      
     return (
 
 
 <Paper className={classes.root}>
         <Typography> Categories mapped and shown</Typography>
+
        
 
 
@@ -37,3 +40,13 @@ export default () => {
 
     )
 }
+
+/**
+ * 
+      useEffect(() => {
+        dispatch(());
+    
+      }, []);
+    
+
+ */

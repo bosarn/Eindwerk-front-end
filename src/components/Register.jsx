@@ -18,11 +18,10 @@ export default () => {
         spacer:{
           marginRight: 'auto',
           marginLeft: 'auto',
-            width: '70%'
+          width: '70%'
         },
         form: {
           marginTop: '5em',
-
           width:'100%',
           position: "relative",
           justifyContent: "center",

@@ -25,12 +25,10 @@ const FETCH_ORDERS_ERROR = "FETCH_ORDERS_ERROR";
 //return error if not 
 // unfresh token will set error
 export const getOrders = () => (dispatch) => {
-  console.log(localStorage.getItem('token'))
   dispatch(loadOrders())
   axios({
         method: 'get',
         url: `http://127.0.0.1:8000/api/users`,
-        
         headers: {
             "Content-Type": "application/ld+json; charset=utf-8",
             Authorization:
