@@ -49,7 +49,7 @@ export default (props) => {
       marginTop: "3px",
 
     },
-    headimage: {},
+    headimage: {width: '100%'},
     slider: {
       
       width: "80px",
@@ -64,7 +64,7 @@ export default (props) => {
       marginLeft: 'auto',
       marginRight: 'auto',
       flexDirection: "column",
-      width: "70%",
+      width: "60%",
       padding: "1em",
     },
     panel: {
@@ -120,7 +120,7 @@ export default (props) => {
               component="img"
               image={
   
-                process.env.REACT_APP_BASE_PATH +
+                `https://wdev.be/wdev_arno/eindwerk/image.php/${object.data.images[0].path}?width=550&height=550&cropratio=1:1&image=https://wdev.be/wdev_arno/eindwerk/public` +
                 object.data.images[ carousel+1 > object.data.images.length ?  0 : carousel].path
               }
 
@@ -144,7 +144,7 @@ export default (props) => {
                     onClick={() => dispatch(setCarousel(i))}
                     className={classes.slider}
                     title={image.name}
-                    image={process.env.REACT_APP_BASE_PATH + image.path}
+                    image={ `https://wdev.be/wdev_arno/eindwerk/image.php/${image.path}?width=80&height=80&cropratio=1:1&image=https://wdev.be/wdev_arno/eindwerk/public${image.path}`}
                     component="img"
                   />
                 

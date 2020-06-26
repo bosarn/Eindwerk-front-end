@@ -50,6 +50,14 @@ export default () => {
       width: "250px",
       
     },
+    headerimage: {
+      paddingTop: '50px',
+      height: '40%',
+      width: '100%',
+      clipPath: 'polygon(40% 0, 100% 0, 64% 100%, 0 100%)',
+      marginLeft: 'auto',
+      marginRight: 'auto'
+    },
     money: {
       marginLeft: 'auto',
       marginRight: 'auto',
@@ -206,13 +214,15 @@ export default () => {
   return (
 <>
       <div className={classes.Pages}>
+       {//<img src='\MIA-Vamil_website.jpg' alt='headerimage' className={classes.headerimage} ></img> 
+       }
       <form className={classes.textalign} onSubmit={submitHandler}>
         
         <TextField className={classes.textfield} id="outlined-secondary" label="Search prints..." variant="outlined"  color='secondary'
         onChange={(e) => {settextFieldValue(e.target.value)}}/>
 
       </form>
-      
+
         {loading && (
           <CircularProgress
             className={classes.loading}
@@ -256,7 +266,7 @@ export default () => {
                     ) : (
                       <Skeleton animation="wave" height={10} width="40%" />
                     )}
-</div>
+                    </div>
                     {object ? (
                       <Button className={classes.shoppingcart} onClick={() => dispatch(pushItemToCart(object))}>
                         <AddShoppingCartIcon />
@@ -280,8 +290,8 @@ export default () => {
                         <CardMedia
                           title={object.name}
                           image={
-                            process.env.REACT_APP_BASE_PATH +
-                            object.images[0].path
+                            `https://wdev.be/wdev_arno/eindwerk/image.php/${object.images[0].path}?width=250&height=250&cropratio=1:1&image=https://wdev.be/wdev_arno/eindwerk/public${object.images[0].path}`
+  
                           }
                           component="img"
                           maxheight="250px"

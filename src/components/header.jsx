@@ -28,6 +28,7 @@ const useStyles = makeStyles( theme =>({
     border: 0,
     boxShadow: 'rgba(19, 89, 19, .19)',
     color: 'white',
+    position: 'sticky'
 
   },
   CartHover: {
@@ -137,7 +138,7 @@ const[slideMessage, setSlideMessage]=useState('Van idee naar 3D')
 
 
 return (
-<AppBar position="static" className={classes.root} >
+<AppBar position="sticky" className={classes.root} >
   
   <Toolbar className={classes.toolbar}>
   {matches ? <img className={classes.images} src='/logo.png' alt='logo'></img> : ''}

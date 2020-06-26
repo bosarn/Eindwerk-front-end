@@ -76,7 +76,7 @@ useEffect(() => {
   const [name,setName] = useState('')
   const [password,setPassword] = useState('')
   const [address,setAddress] = useState('')
-  const [number,setNumber] = useState('')
+  const [surname,setSurname] = useState('')
   const [verwijder,setVerwijder] = useState(false)
 
 
@@ -87,8 +87,8 @@ const submitHandler = (e) => {
    if (name === ""){
     setName(data.orders.data["hydra:member"][0].name)}
    if (password === ''){setPassword(data.orders.data["hydra:member"][0].name)}
-   if (address === ''){setAddress(data.orders.data["hydra:member"][0].email)}
-   if (number === ''){setNumber(data.orders.data["hydra:member"][0].email)}
+   if (address === ''){setAddress(data.orders.data["hydra:member"][0].address)}
+   if (surname === ''){setSurname(data.orders.data["hydra:member"][0].surname)}
 
     else if (name !== "") {
 
@@ -111,7 +111,12 @@ const putUser = () => {
     })
     .then(
       res => {
+        if (verwijder === true) {
+          dispatch(ToastDashMessage('U werd kapotgemaakt!', 'warning'))
+        }
+        else {
         dispatch(ToastDashMessage('Changing user account details, thank you for your DATA NOM NOM NOM', 'info'))
+        };
 
     })
     .catch(
@@ -125,7 +130,7 @@ const putUser = () => {
   return (
     <>
       <Paper className={classes.form}>
-        <Button onClick={()=>{console.log(password,name,address,number)}}> TEstingbuTtOnE</Button>
+        <Button onClick={()=>{console.log(password,name,address,surname)}}> TEstingbuTtOnE</Button>
         <h1 className={classes.Title}> Change user details </h1>
         
         {data.orders.data["hydra:member"] ? (
@@ -157,10 +162,10 @@ const putUser = () => {
 
             <h2 className={classes.Title}>Address</h2>
             <TextField 
-              onChange={(e) => {setNumber(e.target.value)}} 
+              onChange={(e) => {setSurname(e.target.value)}} 
               type="text"
               className={classes.inputField}
-              value={number}
+              value={surname}
               placeholder={data.orders.data["hydra:member"][0].email}
               color='secondary'
             />
