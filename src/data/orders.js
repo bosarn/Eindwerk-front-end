@@ -28,7 +28,7 @@ export const getOrders = () => (dispatch) => {
   dispatch(loadOrders())
   axios({
         method: 'get',
-        url: `http://127.0.0.1:8000/api/users`,
+        url: `https://wdev.be/wdev_arno/eindwerk/api/users`,
         headers: {
             "Content-Type": "application/ld+json; charset=utf-8",
             Authorization:

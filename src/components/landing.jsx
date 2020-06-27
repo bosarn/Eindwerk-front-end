@@ -82,7 +82,7 @@ export default () => {
       opacity: '0',
       Zindex: '99999999999',  
       width: '100%',
-      height: '250px',
+      height: '188px',
       left: 0,
       top: 0,
       background: 'rgba( 0, 0, 0, 0.3)',
@@ -290,7 +290,7 @@ export default () => {
                         <CardMedia
                           title={object.name}
                           image={
-                            `https://wdev.be/wdev_arno/eindwerk/image.php/${object.images[0].path}?width=250&height=250&cropratio=1:1&image=https://wdev.be/wdev_arno/eindwerk/public${object.images[0].path}`
+                            `https://wdev.be/wdev_arno/eindwerk/system/public${object.images[0].path}`
   
                           }
                           component="img"
@@ -368,5 +368,5 @@ export default () => {
  *    return currencyFormat(currentprice)
  * }
  * 
- * 
+ * https://wdev.be/wdev_arno/eindwerk/image.php${object.images[0].path}?width=250&height=250&cropratio=1:1&image=
  *  */                      

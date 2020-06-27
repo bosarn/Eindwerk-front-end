@@ -24,7 +24,7 @@ export const getCategories = (objectID) => (dispatch) => {
   dispatch(loadCategories());
   axios
     //.get(`${process.env.REACT_APP_API_URL}objects/${objectID}`)
-    .get(`http://127.0.0.1:8000/api/categories?page=1`)
+    .get(`https://wdev.be/wdev_arno/eindwerk/api/categories?page=1`)
     .then((res) => {
       console.log(res)
       if (res.data === null) {

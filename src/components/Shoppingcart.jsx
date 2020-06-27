@@ -23,6 +23,7 @@ import {
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import axios from "axios";
 import {currencyFormat} from '../helpers/moneyconvert'
+import { ToastDashMessage } from "../data/snackbar";
 
 export default () => {
   const dispatch = useDispatch();
@@ -127,12 +128,11 @@ export default () => {
       data: data,
     }).then((res) => {
       console.log(res);
-      // check if retur is 200 or something
-      // else seterror
-      // empty shopping cart
-      //redirect
-      // setmessage popup
-    });
+      dispatch(ToastDashMessage('Order placed! Thank you for your MONEY!!!!', 'success'))
+
+    }).catch((reject)=> {
+      dispatch(ToastDashMessage('Something went wrong, try again at a later moment', 'error'))
+    })
   };
   //onchange change state with valueof input
 
@@ -148,7 +148,8 @@ export default () => {
               >
                 <div className={classes.test}>
                   <div className={classes.heading}>
-                    <Typography variant='h4'>{object.print.name}</Typography> {currencyFormat(object.print.currentPriceValue)} X
+                    <Typography variant='h4'>{object.print.name}</Typography> 
+                    {currencyFormat(object.print.currentPriceValue)} X
                     <form>
                       <input
                         onChange={(e) =>
@@ -234,8 +235,3 @@ export default () => {
   );
 };
 
-//check if token alive?
-// bearer token : JWT
-// POST => api/orders
-// send token
-// make up order details from state

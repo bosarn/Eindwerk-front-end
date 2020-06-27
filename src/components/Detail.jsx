@@ -118,10 +118,9 @@ export default (props) => {
               }
               className={classes.headimage}
               component="img"
-              image={
-  
-                `https://wdev.be/wdev_arno/eindwerk/image.php/${object.data.images[0].path}?width=550&height=550&cropratio=1:1&image=https://wdev.be/wdev_arno/eindwerk/public` +
-                object.data.images[ carousel+1 > object.data.images.length ?  0 : carousel].path
+              image={ 'https://wdev.be/wdev_arno/eindwerk/system/public' +
+              object.data.images[ carousel+1 > object.data.images.length ?  0 : carousel].path
+
               }
 
             />
@@ -144,7 +143,7 @@ export default (props) => {
                     onClick={() => dispatch(setCarousel(i))}
                     className={classes.slider}
                     title={image.name}
-                    image={ `https://wdev.be/wdev_arno/eindwerk/image.php/${image.path}?width=80&height=80&cropratio=1:1&image=https://wdev.be/wdev_arno/eindwerk/public${image.path}`}
+                    image={ `https://wdev.be/wdev_arno/eindwerk/system/public${image.path}`}
                     component="img"
                   />
                 
@@ -217,7 +216,7 @@ export default (props) => {
               : "Loading"}
           </ul>
                 <Paper className={classes.description}>
-                  <Typography variant='h4' align='center'>Description</Typography>
+                  
                 {object.data.description ? 
                 <Typography variant="h5" align='center' dangerouslySetInnerHTML={{__html: object.data.description}} ></Typography> : 'There is no description at the time, apologies!' }
 
@@ -230,3 +229,10 @@ export default (props) => {
               </>
   );
 };
+
+
+/**
+ *   
+                `https://wdev.be/wdev_arno/eindwerk/image.php/${object.data.images[0].path}?width=550&height=550&cropratio=1:1&image=https://wdev.be/wdev_arno/eindwerk/public` +
+                object.data.images[ carousel+1 > object.data.images.length ?  0 : carousel].path
+ */

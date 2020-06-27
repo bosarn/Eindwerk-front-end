@@ -78,17 +78,20 @@ useEffect(() => {
   const [address,setAddress] = useState('')
   const [surname,setSurname] = useState('')
   const [verwijder,setVerwijder] = useState(false)
-
+  const [number, setNumber] = useState('')
+  const [postcode, setPostcode] = useState('')
 
 //any hook that is set is used, any that is false is left alone
 
 const submitHandler = (e) => {
   e.preventDefault();
-   if (name === ""){
-    setName(data.orders.data["hydra:member"][0].name)}
+   if (name === ""){setName(data.orders.data["hydra:member"][0].name)}
    if (password === ''){setPassword(data.orders.data["hydra:member"][0].name)}
    if (address === ''){setAddress(data.orders.data["hydra:member"][0].address)}
    if (surname === ''){setSurname(data.orders.data["hydra:member"][0].surname)}
+   if (number === ''){setNumber(data.orders.data["hydra:member"][0].number)}
+   if (postcode === ''){setPostcode(data.orders.data["hydra:member"][0].postcode)}
+
 
     else if (name !== "") {
 
@@ -107,6 +110,7 @@ const putUser = () => {
           `Bearer ${localStorage.getItem('token')}`},
       data: {
             name: name,
+            
       }
     })
     .then(
@@ -115,7 +119,7 @@ const putUser = () => {
           dispatch(ToastDashMessage('U werd kapotgemaakt!', 'warning'))
         }
         else {
-        dispatch(ToastDashMessage('Changing user account details, thank you for your DATA NOM NOM NOM', 'info'))
+        dispatch(ToastDashMessage('Changing user account details, thank you ', 'info'))
         };
 
     })
@@ -126,11 +130,10 @@ const putUser = () => {
     )
 }
 
-
+// email password name surname street number  postcode 
   return (
     <>
       <Paper className={classes.form}>
-        <Button onClick={()=>{console.log(password,name,address,surname)}}> TEstingbuTtOnE</Button>
         <h1 className={classes.Title}> Change user details </h1>
         
         {data.orders.data["hydra:member"] ? (
@@ -160,29 +163,38 @@ const putUser = () => {
             color='secondary' 
             value={name}/>
 
-            <h2 className={classes.Title}>Address</h2>
+            <h2 className={classes.Title}>Surname</h2>
             <TextField 
               onChange={(e) => {setSurname(e.target.value)}} 
               type="text"
               className={classes.inputField}
               value={surname}
-              placeholder={data.orders.data["hydra:member"][0].email}
+              placeholder={data.orders.data["hydra:member"][0].surname}
               color='secondary'
             />
-            <h2 className={classes.Title}>Number</h2>
+            <h2 className={classes.Title}>Street</h2>
             <TextField 
               onChange={(e) => {setAddress(e.target.value)}} 
               type="text"
               className={classes.inputField}
+              placeholder={data.orders.data["hydra:member"][0].address}
               value={address}
               color='secondary'
             />
-            <h2 className={classes.Title}>Other</h2>
+            <h2 className={classes.Title}>Number</h2>
             <TextField 
-              onChange={(e) => {setPassword(e.target.value)}} 
+              onChange={(e) => {setNumber(e.target.value)}} 
               type="text"
               className={classes.inputField}
-              value={password}
+              value={number}
+              color='secondary'
+            />
+              <h2 className={classes.Title}>Postcode</h2>
+            <TextField 
+              onChange={(e) => {setPostcode(e.target.value)}} 
+              type="text"
+              className={classes.inputField}
+              value={postcode}
               color='secondary'
             />
 
