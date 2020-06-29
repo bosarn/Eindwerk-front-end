@@ -3,8 +3,7 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import Login from './components/login';
@@ -18,11 +17,10 @@ import Shoppingcart from './components/Shoppingcart';
 import Profile from './components/Profile'
 import Categories from './components/Categories'
 import { createMuiTheme } from '@material-ui/core/styles';
-import {blueGrey, red } from '@material-ui/core/colors/';
+import { red } from '@material-ui/core/colors/';
 import { ThemeProvider } from '@material-ui/core/styles';
 import Register from "./components/Register"
 import Snackbar from './components/Snackbar'
-
 
 function App() {
 
@@ -77,7 +75,7 @@ const handleChange = () => {
       <Categories/>
       </div>
     </Route>
-    <Route path="/wdev_arno/eindwerk/api/objects/:id/:title" render={(props)=> <Detail {...props}/>}/>   
+    <Route path="/wdev_arno/eindwerk/api/objects/:id/:name" render={(props)=> <Detail {...props}/>}/>   
 
     <Route path='/shopping-cart'>
       <Shoppingcart/>

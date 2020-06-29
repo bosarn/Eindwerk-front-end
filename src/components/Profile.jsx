@@ -1,14 +1,19 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Paper, Typography, TextField, CircularProgress, Box } from "@material-ui/core";
+import {
+  Button,
+  Paper,
+  Typography,
+  TextField,
+  CircularProgress,
+} from "@material-ui/core";
 import Orders from "./Orders";
 import { useDispatch, useSelector } from "react-redux";
-import {getOrders} from '../data/orders'
-import axios from 'axios';
+import { getOrders } from "../data/orders";
+import axios from "axios";
 import { ToastDashMessage } from "../data/snackbar";
-import {regexValidateNumber, regexvalidate} from '../helpers/validation'
-
+import { regexvalidate } from "../helpers/validation";
 
 export default () => {
   const useStyles = makeStyles((theme) => ({
@@ -58,204 +63,245 @@ export default () => {
       marginLeft: "50%",
       marginTop: "50vh",
       color: theme.palette.secondary.detail,
-
     },
     address: {
-      marginTop: '5px',
-      marginBottom: '10px',
-      color: 'grey',
-      
-    }
+      marginTop: "5px",
+      marginBottom: "10px",
+      color: "grey",
+    },
   }));
   const data = useSelector((state) => ({
     orders: state.orders,
   }));
 
   const dispatch = useDispatch();
-  useEffect (  () => {
-     dispatch(getOrders());
-
-}, [dispatch]);
-
+  useEffect(() => {
+    dispatch(getOrders());
+  }, [dispatch]);
 
   const classes = useStyles();
 
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [surname, setSurname] = useState("");
+  const [verwijder, setVerwijder] = useState(false);
+  const [number, setNumber] = useState("");
+  const [postcode, setPostcode] = useState("");
+  const [userID, setUserID] = useState("");
 
-   
-  const [name,setName] = useState('')
-  const [password,setPassword] = useState('')
-  const [address,setAddress] = useState('')
-  const [surname,setSurname] = useState('')
-  const [verwijder,setVerwijder] = useState(false)
-  const [number, setNumber] = useState('')
-  const [postcode, setPostcode] = useState('')
-  const [userID, setUserID] = useState('');
+  //any hook that is set is used, any that is false is left alone
+  const checkall = () => {
+    setUserID(data.orders.data["hydra:member"][0]["@id"]);
+    if (name === "") {
+      setName(data.orders.data["hydra:member"][0].name);
+    }
+    if (address === "") {
+      setAddress(data.orders.data["hydra:member"][0].address);
+    }
+    if (surname === "") {
+      setSurname(data.orders.data["hydra:member"][0].surname);
+    }
+    if (number === "") {
+      setNumber(data.orders.data["hydra:member"][0].Streetnumber);
+    }
+    if (postcode === "") {
+      setPostcode(data.orders.data["hydra:member"][0].postcode.postcode);
+    }
+  };
 
-//any hook that is set is used, any that is false is left alone
-const checkall = () =>{
-  setUserID(data.orders.data["hydra:member"][0]['@id'])
-  if (name === ""){setName(data.orders.data["hydra:member"][0].name)}
-  if (address === ''){setAddress(data.orders.data["hydra:member"][0].address)}
-  if (surname === ''){setSurname(data.orders.data["hydra:member"][0].surname)}
-  if (number === ''){setNumber(data.orders.data["hydra:member"][0].Streetnumber)}
-  if (postcode === ''){setPostcode(data.orders.data["hydra:member"][0].postcode.postcode)}
-}
+  const validateProfiel = () => {
+    if (
+      regexvalidate(name) &&
+      regexvalidate(address) &&
+      regexvalidate(surname) &&
+      regexvalidate(postcode) &&
+      regexvalidate(number)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (validateProfiel()) {
+      putUser();
+    } else {
+      dispatch(
+        ToastDashMessage(
+          "An inputfield contains forbidden characters",
+          "warning"
+        )
+      );
+    }
+  };
 
-const validateProfiel = () => {
-  
-  if ( regexvalidate(name) && regexvalidate(address) && regexvalidate(surname) &&  regexvalidate(postcode) && regexvalidate(number)) {
-    
-    return true
-  }
-  else {
-    
-    return false
-  }
-}
-
-const submitHandler =  (e) => {
-  e.preventDefault();
-  if(validateProfiel()) {
-    putUser();
-  }
-  else{
-    dispatch(ToastDashMessage('An inputfield contains forbidden characters', 'warning'))
-  }
-};
-console.log(data)
-
-
-
-const putUser = () => {
-  axios({
-      method: 'put',
-      url: `https://wdev.be/wdev_arno/eindwerk/api/users/${userID.substring( userID.lastIndexOf('/')+1, userID.length )}`,
-      headers: { 
-          'Content-Type' : 'application/json',
-          Authorization:
-          `Bearer ${localStorage.getItem('token')}`},
+  const putUser = () => {
+    axios({
+      method: "put",
+      url: `${process.env.REACT_APP_API_URL}users/${userID.substring(
+        userID.lastIndexOf("/") + 1,
+        userID.length
+      )}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       data: {
-            name: name,
-            isDeleted : verwijder,
-            address: address,
-            surname: surname,
-            Streetnumber: parseInt(number),
-            //postcode: postcode
-      }
+        name: name,
+        isDeleted: verwijder,
+        address: address,
+        surname: surname,
+        Streetnumber: parseInt(number),
+        //postcode: postcode
+      },
     })
-    .then(
-      res => {
+      .then((res) => {
         if (verwijder === true) {
-          dispatch(ToastDashMessage('U werd kapotgemaakt!', 'warning'))
+          dispatch(ToastDashMessage("U werd kapotgemaakt!", "warning"));
+        } else {
+          dispatch(
+            ToastDashMessage(
+              "Changing user account details, thank you ",
+              "info"
+            )
+          );
         }
-        else {
-        dispatch(ToastDashMessage('Changing user account details, thank you ', 'info'))
-        };
-
-    })
-    .catch(
-      reject => {
-        dispatch(ToastDashMessage('Something went wrong, Are you logged in ?', 'error'))
-      }
-    )
-}
+      })
+      .catch((reject) => {
+        dispatch(
+          ToastDashMessage("Something went wrong, Are you logged in ?", "error")
+        );
+      });
+  };
 
   return (
     <>
-    
       <Paper className={classes.form}>
         <h1 className={classes.Title}> Change user details </h1>
-        
-        {data.orders.data["hydra:member"] ? (
-          <form className={classes.formmakeup} onSubmit={submitHandler} onClick={()=>checkall()}>
 
+        {data.orders.data["hydra:member"] ? (
+          <form
+            className={classes.formmakeup}
+            onSubmit={submitHandler}
+            onClick={() => checkall()}
+          >
             <h2 className={classes.Title}>Mail address</h2>
 
-            <TextField 
+            <TextField
               className={classes.inputField}
               placeholder={data.orders.data["hydra:member"][0].email}
-              color='secondary'
+              color="secondary"
             />
 
             <h2 className={classes.Title}>Password</h2>
-            <TextField 
+            <TextField
               name="password"
               type="password"
               className={classes.inputField}
-              color='secondary'
+              color="secondary"
             />
             <h2 className={classes.Title}>Name</h2>
-            <TextField 
-            placeholder={data.orders.data["hydra:member"][0].name}
-            onChange={(e) => {setName(e.target.value)}} 
-            type="text" 
-            className={classes.inputField}
-            color='secondary' 
-            value={name}/>
+            <TextField
+              placeholder={data.orders.data["hydra:member"][0].name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              type="text"
+              className={classes.inputField}
+              color="secondary"
+              value={name}
+            />
 
             <h2 className={classes.Title}>Surname</h2>
-            <TextField 
-              onChange={(e) => {setSurname(e.target.value)}} 
+            <TextField
+              onChange={(e) => {
+                setSurname(e.target.value);
+              }}
               type="text"
               className={classes.inputField}
               value={surname}
               placeholder={data.orders.data["hydra:member"][0].surname}
-              color='secondary'
+              color="secondary"
             />
             <h2 className={classes.Title}>Street</h2>
-            <TextField 
-              onChange={(e) => {setAddress(e.target.value) }} 
+            <TextField
+              onChange={(e) => {
+                setAddress(e.target.value);
+              }}
               type="text"
               className={classes.inputField}
               placeholder={data.orders.data["hydra:member"][0].address}
               value={address}
-              color='secondary'
+              color="secondary"
             />
             <h2 className={classes.Title}>Number</h2>
-            <TextField 
-              onChange={(e) => {setNumber(e.target.value)}} 
+            <TextField
+              onChange={(e) => {
+                setNumber(e.target.value);
+              }}
               type="text"
               className={classes.inputField}
               value={number}
               placeholder={data.orders.data["hydra:member"][0].Streetnumber}
-              color='secondary'
+              color="secondary"
             />
-              <h2 className={classes.Title}>Postcode</h2>
-            <TextField 
-              onChange={(e) => {setPostcode(e.target.value)}} 
+            <h2 className={classes.Title}>Postcode</h2>
+            <TextField
+              onChange={(e) => {
+                setPostcode(e.target.value);
+              }}
               type="text"
               className={classes.inputField}
               value={postcode}
-              placeholder={data.orders.data["hydra:member"][0].postcode.postcode}
-              color='secondary'
+              placeholder={
+                data.orders.data["hydra:member"][0].postcode.postcode
+              }
+              color="secondary"
             />
-          <div className={classes.address}>
-            <Typography align='center'> {data.orders.data["hydra:member"][0].postcode.plaatsnaam}</Typography>
-            <Typography align='center'> {data.orders.data["hydra:member"][0].postcode.gemeente}</Typography>
-            <Typography align='center'> {data.orders.data["hydra:member"][0].postcode.provincie}</Typography>
+            <div className={classes.address}>
+              <Typography align="center">
+                {" "}
+                {data.orders.data["hydra:member"][0].postcode.plaatsnaam}
+              </Typography>
+              <Typography align="center">
+                {" "}
+                {data.orders.data["hydra:member"][0].postcode.gemeente}
+              </Typography>
+              <Typography align="center">
+                {" "}
+                {data.orders.data["hydra:member"][0].postcode.provincie}
+              </Typography>
             </div>
             <div className={classes.inputField}>
               {" "}
-              <Button className={classes.button} type="submit" >
+              <Button className={classes.button} type="submit">
                 Change details
               </Button>
-              <Button color="primary" variant="contained" type="submit" onClick={()=>setVerwijder(true)}>
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                onClick={() => setVerwijder(true)}
+              >
                 delete
               </Button>{" "}
             </div>
           </form>
         ) : (
           <CircularProgress
-          className={classes.loading}
-          display={"block"}
-          size={100}            
-        />
+            className={classes.loading}
+            display={"block"}
+            size={100}
+          />
         )}
-
-      </Paper> 
-      {data.orders.data["hydra:member"] ? 
-      <Orders data={data.orders.data["hydra:member"][0]}/> :' '}
+      </Paper>
+      {data.orders.data["hydra:member"] ? (
+        <Orders data={data.orders.data["hydra:member"][0]} />
+      ) : (
+        " "
+      )}
     </>
   );
 };

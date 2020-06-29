@@ -23,10 +23,8 @@ const FETCH_CATEGORY_ERROR = "FETCH_CATEGORY_ERROR";
 export const getCategories = (objectID) => (dispatch) => {
   dispatch(loadCategories());
   axios
-    //.get(`${process.env.REACT_APP_API_URL}objects/${objectID}`)
-    .get(`https://wdev.be/wdev_arno/eindwerk/api/categories?page=1`)
+    .get(`${process.env.REACT_APP_API_URL}categories`)
     .then((res) => {
-      console.log(res)
       if (res.data === null) {
         dispatch(setError("No categories found"));
       } else {

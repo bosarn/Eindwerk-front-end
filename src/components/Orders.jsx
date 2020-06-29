@@ -1,7 +1,4 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getOrders } from "../data/orders";
 import {
   Typography,
   Paper,
@@ -57,25 +54,27 @@ export default (data) => {
                   <ExpansionPanelDetails>
                     <ul>
                       <li>
-                        {" "}
+                        
                         <Typography variant="body1" align="center">
-                          {" "}
+                         
                           <strong>Your order status :</strong>
-                          {orders.status}{" "}
+                          {orders.status}
                         </Typography>
                       </li>
                       <li>
-                        {" "}
+                        
                         <Typography variant="body1" align="center">
-                          {" "}
+                          
                           <strong>Shipping to : </strong>
-                          {orders.shippingAdress ? orders.shippingAdress : `${data.data.address}  ${data.data.Streetnumber}  ${data.data.postcode}`  }{" "}
+                          {orders.shippingAdress
+                            ? orders.shippingAdress
+                            : `${data.data.address}  ${data.data.Streetnumber}  ${data.data.postcode}`}
                         </Typography>
                       </li>
 
                       <li>
                         <Typography variant="body1" align="center">
-                          {" "}
+                         
                           <strong>Order made :</strong> {orders.date}
                         </Typography>
                       </li>
@@ -89,7 +88,7 @@ export default (data) => {
       ) : (
         <Paper className={classes.Order}>
           <Typography align="center">
-            {" "}
+           
             Empty... Please shop for items and click the shopping cart icon to
             place an order
           </Typography>
@@ -98,9 +97,4 @@ export default (data) => {
     </>
   );
 
-  /**
- * 
-        
-        
- */
 };

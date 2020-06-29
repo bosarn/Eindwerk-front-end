@@ -1,5 +1,5 @@
 import { useSelector,useDispatch } from "react-redux";
-import React,{useState, useEffect} from 'react'
+import React,{ useEffect} from 'react'
 import { makeStyles } from "@material-ui/core/styles";
 import {  
   Paper, 
@@ -107,8 +107,9 @@ const searchbyCategory = (categoryName) => {
   <ExpansionPanelDetails>
   <div className={classes.description}>
 
-
-<Button className={classes.button} onClick={()=>searchbyCategory(category.name)}>Search by category!</Button>
+<label htmlfor='buttone'> Search all objects using this category
+<Button name='buttone' className={classes.button} onClick={()=>searchbyCategory(category.name)}>Search</Button>
+</label>
 <Typography variant='body2' className={classes.descriptiontext}>{category.description}</Typography>
 </div>
     </ExpansionPanelDetails>

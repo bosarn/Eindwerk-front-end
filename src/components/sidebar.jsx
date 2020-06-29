@@ -1,17 +1,15 @@
-import React,{useState, useEffect} from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector,useDispatch } from "react-redux";
 import { toggleFilter } from "../data/filter";
 import { Checkbox, Button, Slide, Chip } from "@material-ui/core";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import {setAllCategories} from '../data/filter'
-import { ToastDashMessage } from "../data/snackbar";
-import { Redirect } from "react-router-dom";
+
+
 
 
 export default ({checker, checked}) => {
 
-  const matches = useMediaQuery('(min-width:600px)');
+
 
   const useStyles = makeStyles(theme=>({
     root: {
@@ -53,15 +51,9 @@ export default ({checker, checked}) => {
 
   const { objects } = data;
   const { filter } = data;
-  const{ carousel } = data
 
-  const log = (e) => {
-    e.preventDefault();
-    console.log(filter)
-    //console.log(objects)
-    //console.log(data.cart);
 
-  };
+
 const logout=(e)=>{
     e.preventDefault()
     localStorage.removeItem('token')
@@ -111,12 +103,7 @@ const logout=(e)=>{
              >{category}</Chip>
           </li>
         ))}
-        <form onSubmit={log}>
-          <Button type="submit" value="check filter state">
 
-            States
-          </Button>
-        </form>
         <form onSubmit={logout}>
           <Button type="submit" value="logout" color='secondary' variant='contained'>
 

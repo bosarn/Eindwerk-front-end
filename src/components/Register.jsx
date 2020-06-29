@@ -1,272 +1,257 @@
-import React from 'react'
-import {useState, useEffect} from 'react'
-import axios from 'axios';
-import {makeStyles} from "@material-ui/core/styles";
-import {Button, TextField, Typography} from "@material-ui/core"
-import {ToastDashMessage} from '../data/snackbar'
-import {useDispatch, useSelector} from 'react-redux'
-import {regexvalidate} from '../helpers/validation'
-import {getObjects} from '../data/postcodes'
+import React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { makeStyles } from "@material-ui/core/styles";
+import { Button, TextField, Typography } from "@material-ui/core";
+import { ToastDashMessage } from "../data/snackbar";
+import { useDispatch, useSelector } from "react-redux";
+import { regexvalidate } from "../helpers/validation";
 
 export default () => {
+  const useStyles = makeStyles((theme) => ({
+    flex: {
+      display: "flex",
+      width: "100%",
+      justifyContent: "space-around",
+    },
+    spacer: {
+      marginRight: "auto",
+      marginLeft: "auto",
+      width: "70%",
+    },
+    form: {
+      marginTop: "5em",
+      width: "100%",
+      position: "relative",
+      justifyContent: "center",
+      alignItems: "center",
+    },
 
-    const useStyles = makeStyles( theme => ({
-        flex: {
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'space-around'
-        },
-        spacer:{
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          width: '70%'
-        },
-        form: {
-          marginTop: '5em',
-          width:'100%',
-          position: "relative",
-          justifyContent: "center",
-          alignItems: "center",
-      
-        },
-      
-        loginForm: {
-          borderTop: `20px solid ${theme.palette.secondary.detail}`,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          border: '1px solid grey',
-        },
-        inputField: {
-          color: 'grey',
-          width: '50%',
-          textAlign: 'center',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          marginBottom: '1em'
-      
-        },
-        button:{
-          background: theme.palette.secondary.detail,
-          color: theme.palette.secondary.main,
-          fontWeight: 'bolder',
-      },
-      Title:{
-        color: theme.palette.secondary.main,
-        display: 'flex',
-        justifyContent: 'center',
-        fontSize: '1em'
+    loginForm: {
+      borderTop: `20px solid ${theme.palette.secondary.detail}`,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      border: "1px solid grey",
+    },
+    inputField: {
+      color: "grey",
+      width: "50%",
+      textAlign: "center",
+      marginRight: "auto",
+      marginLeft: "auto",
+      marginBottom: "1em",
+    },
+    button: {
+      background: theme.palette.secondary.detail,
+      color: theme.palette.secondary.main,
+      fontWeight: "bolder",
+    },
+    Title: {
+      color: theme.palette.secondary.main,
+      display: "flex",
+      justifyContent: "center",
+      fontSize: "1em",
+    },
+  }));
+
+  const dispatch = useDispatch();
+
+  const classes = useStyles();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");
+  const [error, setError] = useState("");
+  const [address, setAddress] = useState("");
+  const [surname, setSurname] = useState("");
+  const [number, setNumber] = useState("");
+  const [postcode, setPostcode] = useState("");
+  const [allpostcodes, setAllPostcodes] = useState("");
+
+  useEffect(() => {}, [dispatch]);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const index = e.target[7].options.selectedIndex;
+    const id = e.target[7][index].attributes[0].value;
+    const codeToPost = id.slice(34);
+
+    if (regexvalidate(userName, 1) === false) {
+      setError("Username is too short or has forbidden characters!");
+      dispatch(
+        ToastDashMessage(
+          "Username is too short or has forbidden characters",
+          "warning"
+        )
+      );
+      return null;
     }
-      
-      }));
-      
-
-
-const dispatch=useDispatch();
-
-const data = useSelector((state) => ({
-  postcodes: state.postcodes,
-  
-}));
-
-
-
-const classes = useStyles();
-    
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [userName, setUserName] = useState("");
-    const [error, setError] = useState("")
-    const [address,setAddress] = useState('')
-    const [surname,setSurname] = useState('')
-    const [number, setNumber] = useState('')
-    const [postcode, setPostcode] = useState('')
-    const [allpostcodes,setAllPostcodes] = useState('')
-
-    useEffect(() => {
-      
-  
-    }, [dispatch]);
-
-    const submitHandler = (e) => {
-        e.preventDefault();
-        const index = e.target[7].options.selectedIndex
-        const id = e.target[7][index].attributes[0].value
-        const codeToPost =id.slice(34);
-        
-
-        if (regexvalidate(userName, 1) === false) {
-          setError('Username is too short or has forbidden characters!')
-          dispatch(ToastDashMessage('Username is too short or has forbidden characters', 'warning'))
-          return null;
-        }
-        if( regexvalidate(password, 8)=== false){
-          setError('Password is too short!')
-          dispatch(ToastDashMessage('Password is too short', 'warning'))
-          return null;
-        }
-        if( email=== ''){
-          setError('please input an email address!')
-          dispatch(ToastDashMessage('please input an email address!', 'warning'))
-          return null;
-        }
-        if( regexvalidate(address, 1)=== false && regexvalidate(number, 1) ){
-          setError('please input a valid address!')
-          dispatch(ToastDashMessage('please input a valid address!', 'warning'))
-          return null;
-        }
-        if( regexvalidate(postcode, 1)=== false){
-          setError('please input a valid postcode')
-          dispatch(ToastDashMessage('postcode is wrong!', 'warning'))
-          return null;
-        }
-        registeruser(email, password , userName, address, surname, number,codeToPost);
-      };
-    
-
-    const registeruser = ( email, password, userName,address, surname, number, postcode) => {
-        axios({
-            method: 'post',
-            url: 'https://wdev.be/wdev_arno/eindwerk/api/register',
-            headers: { 
-                'Content-Type' : 'application/json'
-            }, 
-            data: {
-              "email" : email,
-              "password" : password,
-              "name": userName,
-              "address": address,
-              "postcode" : postcode,
-              "surname": surname,
-              "number": number,
-            }
-          })
-          .then(
-            res => {
-              dispatch(ToastDashMessage('Registered account', 'success'))
-            
-
-          })
+    if (regexvalidate(password, 8) === false) {
+      setError("Password is too short!");
+      dispatch(ToastDashMessage("Password is too short", "warning"));
+      return null;
     }
-   // seterror , plus dispatch toast errormessage 
+    if (email === "") {
+      setError("please input an email address!");
+      dispatch(ToastDashMessage("please input an email address!", "warning"));
+      return null;
+    }
+    if (regexvalidate(address, 1) === false && regexvalidate(number, 1)) {
+      setError("please input a valid address!");
+      dispatch(ToastDashMessage("please input a valid address!", "warning"));
+      return null;
+    }
+    if (regexvalidate(postcode, 1) === false) {
+      setError("please input a valid postcode");
+      dispatch(ToastDashMessage("postcode is wrong!", "warning"));
+      return null;
+    }
+    registeruser(codeToPost);
+  };
 
-const postcodehandler =(e) =>{
-
-  setPostcode(e.target.value)
-  
-  if (e.target.value.length === 4) {
+  const registeruser = (Code) => {
     axios({
-      method: 'get',
-      url: `https://wdev.be/wdev_arno/eindwerk/api/postcodes?postcode=${e.target.value}`,
-      headers: {'Content-Type' : 'application/json'}, })
-    .then(
-      res => {
-          if( res.data["hydra:member"].length === 0) {
-            dispatch(ToastDashMessage('Nothing found', 'error'))
+      method: "post",
+      url: "https://wdev.be/wdev_arno/eindwerk/api/register",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        email: email,
+        password: password,
+        name: userName,
+        address: address,
+        postcode: Code,
+        surname: surname,
+        number: number,
+      },
+    }).then((res) => {
+      dispatch(ToastDashMessage("Registered account", "success"));
+    });
+  };
+  // seterror , plus dispatch toast errormessage
+
+  const postcodehandler = (e) => {
+    setPostcode(e.target.value);
+
+    if (e.target.value.length === 4) {
+      axios({
+        method: "get",
+        url: `https://wdev.be/wdev_arno/eindwerk/api/postcodes?postcode=${e.target.value}`,
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((res) => {
+          if (res.data["hydra:member"].length === 0) {
+            dispatch(ToastDashMessage("Nothing found", "error"));
           }
-          setAllPostcodes(res.data["hydra:member"])
-    })
-    .catch(
-      reject=> {
-        
-      }
-    )
-  }
+          setAllPostcodes(res.data["hydra:member"]);
+        })
+        .catch((reject) => {});
+    }
+  };
 
-
-
-
-}
-
-return (
-<div className={classes.form}>
-<Typography align='center'> {error} </Typography>
-  <div className={classes.spacer}>
-<h1 className={classes.Title}> Register </h1>
-      <form onSubmit={submitHandler} className={classes.loginForm}>
-      <h2 className={classes.Title}>E-mail:</h2>
-          <TextField  
-          
-          onChange={(e) => { setEmail(e.target.value)
-                              setError('')}} 
-          type="text" 
-          className ={classes.inputField}
-          color='secondary'
-          value= {email}/>      
+  return (
+    <div className={classes.form}>
+      <Typography align="center"> {error} </Typography>
+      <div className={classes.spacer}>
+        <h1 className={classes.Title}> Register </h1>
+        <form onSubmit={submitHandler} className={classes.loginForm}>
+          <h2 className={classes.Title}>E-mail:</h2>
+          <TextField
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
+            type="text"
+            className={classes.inputField}
+            color="secondary"
+            value={email}
+          />
 
           <h2 className={classes.Title}>Password:</h2>
-          <TextField   
-          onChange={(e) => {setPassword(e.target.value)
-                            setError('') }}
-          name="password" 
-          type="password"
-          color='secondary'
-          className ={classes.inputField }
-          value={password}
-          /> 
-        <h2 className={classes.Title}>Name:</h2>
-          <TextField  
-          
-          onChange={(e) => {setUserName(e.target.value)
-            setError('') }}
-          type="text" 
-          color='secondary'
-          className ={classes.inputField}
-          value= {userName}/>   
+          <TextField
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
+            name="password"
+            type="password"
+            color="secondary"
+            className={classes.inputField}
+            value={password}
+          />
+          <h2 className={classes.Title}>Name:</h2>
+          <TextField
+            onChange={(e) => {
+              setUserName(e.target.value);
+              setError("");
+            }}
+            type="text"
+            color="secondary"
+            className={classes.inputField}
+            value={userName}
+          />
 
-            <h2 className={classes.Title}>Surname</h2>
-            <TextField 
-              onChange={(e) => {setSurname(e.target.value)
-                setError('')}} 
-              type="text"
-              className={classes.inputField}
-              value={surname}
-              color='secondary'
-            />
-            <h2 className={classes.Title}>Street</h2>
-            <TextField 
-              onChange={(e) => {setAddress(e.target.value)
-                setError('')}} 
-              type="text"
-              className={classes.inputField}
-              value={address}
-              color='secondary'
-            />
-            <h2 className={classes.Title}>Number</h2>
-            <TextField 
-              onChange={(e) => {setNumber(e.target.value)
-                setError('')}} 
-              type="text"
-              className={classes.inputField}
-              value={number}
-              color='secondary'
-            />
-              <h2 className={classes.Title}>Postcode</h2>
-            <TextField 
-              onChange={(e) => postcodehandler(e)}
-              type="text"
-              className={classes.inputField}
-              value={postcode}
-              color='secondary'
-            />
-      {allpostcodes ? <select>
-      {allpostcodes.map( (code,i) => 
-            <option key={i} name={code["@id"]}>{`${code.plaatsnaam} : ${code.gemeente}`}</option>
- 
-      )}
-      </select>
-    : ''
-    }
-            
-          <Button 
-          className={classes.button}
-          type="submit">
+          <h2 className={classes.Title}>Surname</h2>
+          <TextField
+            onChange={(e) => {
+              setSurname(e.target.value);
+              setError("");
+            }}
+            type="text"
+            className={classes.inputField}
+            value={surname}
+            color="secondary"
+          />
+          <h2 className={classes.Title}>Street</h2>
+          <TextField
+            onChange={(e) => {
+              setAddress(e.target.value);
+              setError("");
+            }}
+            type="text"
+            className={classes.inputField}
+            value={address}
+            color="secondary"
+          />
+          <h2 className={classes.Title}>Number</h2>
+          <TextField
+            onChange={(e) => {
+              setNumber(e.target.value);
+              setError("");
+            }}
+            type="text"
+            className={classes.inputField}
+            value={number}
+            color="secondary"
+          />
+          <h2 className={classes.Title}>Postcode</h2>
+          <TextField
+            onChange={(e) => postcodehandler(e)}
+            type="text"
+            className={classes.inputField}
+            value={postcode}
+            color="secondary"
+          />
+          {allpostcodes ? (
+            <select>
+              {allpostcodes.map((code, i) => (
+                <option
+                  key={i}
+                  name={code["@id"]}
+                >{`${code.plaatsnaam} : ${code.gemeente}`}</option>
+              ))}
+            </select>
+          ) : (
+            ""
+          )}
+
+          <Button className={classes.button} type="submit">
             Register
-            </Button>    
-      </form>
+          </Button>
+        </form>
       </div>
-      </div>
-      
-)
-    }
-
+    </div>
+  );
+};
