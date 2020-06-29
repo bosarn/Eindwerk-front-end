@@ -24,9 +24,13 @@ import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import axios from "axios";
 import {currencyFormat} from '../helpers/moneyconvert'
 import { ToastDashMessage } from "../data/snackbar";
+import {regexValidateNumber, regexvalidate} from '../helpers/validation'
 
 export default () => {
   const dispatch = useDispatch();
+  const [street, setStreet] = useState('');
+  const [number, setNumber] = useState('');
+  const [postcode, setPostcode] = useState('');
 
   const data = useSelector((state) => ({
     objects: state.objects,
@@ -90,22 +94,40 @@ export default () => {
       justifyContent: "space-between",
       alignItems: "center",
     },
+    button: {
+      color: theme.palette.secondary.main,
+      background: theme.palette.secondary.detail
+    }
   }));
   const classes = useStyles();
 
+  const validateShipping = () => {
+      if(regexvalidate(number) === false ){ 
+        dispatch(ToastDashMessage('Input a valid number please', 'error')) 
+        return false
+    }
+      if(regexvalidate(street) === false ) {
+         dispatch(ToastDashMessage('input a valid streetname please', 'error'))
+         return false
+      }
+      if(regexvalidate(postcode) === false ) {
+        dispatch(ToastDashMessage('input a valid postcode please', 'error'))
+        return false
+      }
+      else {return true}
+  }
+
   const submitHandler = (e) => {
     e.preventDefault();
-    if (localStorage.getItem) {
-      dispatch(clearShoppingCart());
+    if (localStorage.getItem && validateShipping()) {
       sendOrder(shippingmessage);
-
     }
     return null;
   };
 
   let shippingmessage = JSON.stringify({
     status: "Received",
-    shippingAdress: "TODO",
+    shippingAdress: street + number + postcode,
     details: cart.map((object) => ({
       quantity: parseInt(object.quantity),
       objectStatus: "status",
@@ -127,14 +149,31 @@ export default () => {
       },
       data: data,
     }).then((res) => {
-      console.log(res);
-      dispatch(ToastDashMessage('Order placed! Thank you for your MONEY!!!!', 'success'))
+      
+      dispatch(clearShoppingCart());
+      dispatch(ToastDashMessage('Order placed! Thank you for your purchase!', 'success'))
 
     }).catch((reject)=> {
       dispatch(ToastDashMessage('Something went wrong, try again at a later moment', 'error'))
     })
   };
   //onchange change state with valueof input
+
+const submithandler = (e) => {
+  e.preventDefault();
+ 
+  if( regexValidateNumber(e.target[0].value)=== false) {
+    dispatch(ToastDashMessage('please only input numbers', 'error'))
+  }
+  else {
+    dispatch(
+      setObjectQuantity(
+        e.target[0].name,
+        e.target[0].value
+      ))
+      }
+
+}
 
   return (
     <>
@@ -150,18 +189,11 @@ export default () => {
                   <div className={classes.heading}>
                     <Typography variant='h4'>{object.print.name}</Typography> 
                     {currencyFormat(object.print.currentPriceValue)} X
-                    <form>
+                    <form onSubmit={submithandler}>
                       <input
-                        onChange={(e) =>
-                          dispatch(
-                            setObjectQuantity(
-                              object.print["@id"],
-                              e.target.value
-                            )
-                          )
-                        }
+                        name={object.print["@id"]}
                         placeholder={object.quantity}
-                      ></input>
+                      ></input> <Button className={classes.button} type='submit'>Change</Button>
                     </form>
                     {currencyFormat(object.print.currentPriceValue * object.quantity)}
                   </div>
@@ -185,9 +217,8 @@ export default () => {
               </ExpansionPanelSummary>
 
               <ExpansionPanelDetails>
-                <Typography>
-                  Size: {object.print.size} <br></br>
-                  Description :
+                <Typography dangerouslySetInnerHTML={{__html: object.print.description}}>
+                 
                 </Typography>
               </ExpansionPanelDetails>
             </ExpansionPanel>
@@ -222,12 +253,29 @@ export default () => {
         </Paper>
         <Paper className={classes.form}>
           <h2> Shipping: </h2>
-          <label htmlFor="inputfield"> Change Shipping adress:</label>
-          <input name="inputfield" type="text" />
-          <Typography>Shipping fee : $5</Typography>
+          <p>If you want the order to be shipped to a different location fill in this form!</p>
+          <label htmlFor="inputfield"> Street:</label>
+          <input 
+          name="inputfield" 
+          type="text"
+          value={street}
+          onChange={(e)=>{setStreet(e.target.value)}} />
+          <label htmlFor="inputfield"> Number:</label>
+          <input 
+          name="inputfield" 
+          type="text"
+          value={number}
+          onChange={(e)=>{setNumber(e.target.value)}} />
+          <label htmlFor="inputfield"> Postcode:</label>
+          <input 
+          name="inputfield" 
+          type="text"
+          value={postcode}
+          onChange={(e)=>{setPostcode(e.target.value)}} />
+          <Typography>Shipping fee : €5</Typography>
           <Typography>
             {" "}
-            Free shipping on orders higher than a kite...
+            Free shipping on orders higher than €30...
           </Typography>
         </Paper>
       </div>

@@ -21,23 +21,21 @@ const initialState = {
 /*********/
 /* TYPES */
 /*********/
-const FETCH_OBJECTS = "FETCH_OBJECTS";
-const FETCH_OBJECTS_SUCCESS = "FETCH_OBJECTS_SUCCESS";
-const FETCH_OBJECTS_ERROR = "FETCH_OBJECTS_ERROR";
-const FETCH_NEXT_OBJECTS = "FETCH_NEXT_OBJECTS";
-const FETCH_NEXT_OBJECTS_SUCCESS = "FETCH_NEXT_OBJECTS_SUCCESS";
+const FETCH_CODES = "FETCH_CODES";
+const FETCH_CODES_SUCCESS = "FETCH_CODES_SUCCESS";
+const FETCH_CODES_ERROR = "FETCH_CODES_ERROR";
+const FETCH_CODES_NEXT = "FETCH_CODES_NEXT";
+const FETCH_CODES_NEXT_SUCCESS = "FETCH_CODES_NEXT_SUCCESS";
 
 
 /*******************/
 /* ACTION CREATORS */
 /*******************/
 
-export const getObjects = (str) => (dispatch) => {
+export const getObjects = () => (dispatch) => {
   dispatch(loadObjects());
-  let search = '';
-  str ? search  = str : str = ''; 
   axios
-    .get(`${process.env.REACT_APP_API_URL}objects?page=1&published=true&name=${search}`)
+    .get(`${process.env.REACT_APP_API_URL}postcodes?page=1`)
     .then((res) => {
       
       if (res.data["hydra:member"].length === 0) {
@@ -51,7 +49,7 @@ export const getObjects = (str) => (dispatch) => {
           
           ));
           if ( parseInt(res.data["hydra:totalItems"],10)> res.data["hydra:member"].length) {
-            dispatch(getNextObjects(search))
+            dispatch(getNextObjects())
           }
       }
     })
@@ -59,7 +57,7 @@ export const getObjects = (str) => (dispatch) => {
 };
 
 
-export const getNextObjects = str => (dispatch, getState) => {
+export const getNextObjects = () => (dispatch, getState) => {
   const {
     objects: {
       progress: { page, pages }
@@ -69,12 +67,12 @@ export const getNextObjects = str => (dispatch, getState) => {
   dispatch(loadNextObjects(pageToLoad));
   axios
     .get(
-      `${process.env.REACT_APP_API_URL}objects?page=${pageToLoad}&published=true&name=${str}`
+      `${process.env.REACT_APP_API_URL}postcodes?page=${pageToLoad}`
     )
     .then(res => {
       dispatch(setNextObjects(res.data["hydra:member"]));
       if (pageToLoad !== pages) {
-        dispatch(getNextObjects(str));
+        dispatch(getNextObjects());
       }
     })
     .catch(error => dispatch(setError("Api endpoint could not be reached")));
@@ -85,25 +83,25 @@ export const getNextObjects = str => (dispatch, getState) => {
 
 
 
-export const loadObjects = () => ({ type: FETCH_OBJECTS });
+export const loadObjects = () => ({ type: FETCH_CODES });
 
 export const setObjects = (objects,total) => ({
-  type: FETCH_OBJECTS_SUCCESS,
+  type: FETCH_CODES_SUCCESS,
   payload: 
   {objects,
   total}
 });
 
 export const loadNextObjects = page => ({
-  type: FETCH_NEXT_OBJECTS,
+  type: FETCH_CODES_NEXT,
   payload: page
 });
 export const setNextObjects = objects => ({
-  type: FETCH_NEXT_OBJECTS_SUCCESS,
+  type: FETCH_CODES_NEXT_SUCCESS,
   payload: objects
 });
 
-export const setError = (msg) => ({ type: FETCH_OBJECTS_ERROR, payload: msg });
+export const setError = (msg) => ({ type: FETCH_CODES_ERROR, payload: msg });
 
 /***********/
 /* REDUCER */
@@ -111,7 +109,7 @@ export const setError = (msg) => ({ type: FETCH_OBJECTS_ERROR, payload: msg });
 
 export default (state = initialState, { type, payload }) => {
   switch (type) {
-    case FETCH_OBJECTS:
+    case FETCH_CODES:
       return {
         ...state,
         loading: true,
@@ -123,7 +121,7 @@ export default (state = initialState, { type, payload }) => {
           total: 0
         }
       };
-    case FETCH_OBJECTS_SUCCESS:
+    case FETCH_CODES_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -137,15 +135,14 @@ export default (state = initialState, { type, payload }) => {
         }
       };
 
-    case FETCH_OBJECTS_ERROR:
+    case FETCH_CODES_ERROR:
 
-ToastDashMessage(payload)
       return {
         ...state,
         loading: false,
         error: payload,
       };
-  case FETCH_NEXT_OBJECTS:
+  case FETCH_CODES_NEXT:
     return {
       ...state,
       error: "",
@@ -154,7 +151,7 @@ ToastDashMessage(payload)
         page: payload
       }
     };
-  case FETCH_NEXT_OBJECTS_SUCCESS:
+  case FETCH_CODES_NEXT_SUCCESS:
     return {
       ...state,
       loading: false,

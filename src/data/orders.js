@@ -34,7 +34,6 @@ export const getOrders = () => (dispatch) => {
             Authorization:
               `Bearer ${localStorage.getItem('token')}`},
   }).then((res) => {
-    console.log(res)
     if (res.data === null) {
       dispatch(setError("No orders yet! place an order in the homepage"));
     } else {

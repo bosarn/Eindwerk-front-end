@@ -7,3 +7,10 @@ export const regexvalidate = (str, length = 0) => {
     return regex.test(str)
 
 }
+
+export const regexValidateNumber = (str) => {
+
+    const regex = new RegExp(`^[0-9]*$`);
+    return regex.test(str)
+
+}

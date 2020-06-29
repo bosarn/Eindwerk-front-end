@@ -5,6 +5,9 @@ import { toggleFilter } from "../data/filter";
 import { Checkbox, Button, Slide, Chip } from "@material-ui/core";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {setAllCategories} from '../data/filter'
+import { ToastDashMessage } from "../data/snackbar";
+import { Redirect } from "react-router-dom";
+
 
 export default ({checker, checked}) => {
 
@@ -12,7 +15,7 @@ export default ({checker, checked}) => {
 
   const useStyles = makeStyles(theme=>({
     root: {
-      zIndex: 999999,
+      zIndex: 2,
       background: theme.palette.secondary.detail,
       listStyleType: "none",
       color: theme.palette.secondary.main,
@@ -62,6 +65,8 @@ export default ({checker, checked}) => {
 const logout=(e)=>{
     e.preventDefault()
     localStorage.removeItem('token')
+    window.location.replace('http://127.0.0.1:3000/login')
+  
 }
 
   const filterHandler = (filter) => {

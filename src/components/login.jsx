@@ -2,7 +2,7 @@ import React from 'react';
 import {useState} from 'react'
 import axios from 'axios';
 import {makeStyles} from "@material-ui/core/styles";
-import {Button} from "@material-ui/core"
+import {Button,Typography} from "@material-ui/core"
 import {ToastDashMessage} from '../data/snackbar'
 import {useDispatch} from 'react-redux'
 
@@ -54,6 +54,13 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       justifyContent: 'center',
       fontSize: '1em'
+  },
+  logout: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: "center",
+    paddingTop: '3em'
   }
 
 }));
@@ -95,7 +102,12 @@ const dispatch = useDispatch()
             localStorage.setItem('token', webToken);
           })
     }
+    const logout=(e)=>{
+      e.preventDefault()
+      localStorage.removeItem('token')
+      dispatch(ToastDashMessage('Logged out ', 'info'))
     
+  }
 
     return (
 
@@ -128,6 +140,10 @@ const dispatch = useDispatch()
               Log in
               </Button>    
         </form>
+        <div className={classes.logout}>
+        <Typography align='center'>If you wish to log out:</Typography>
+        <Button className={classes.button} onClick={logout}> log out</Button>
+        </div>
         </div>
 </div>
 

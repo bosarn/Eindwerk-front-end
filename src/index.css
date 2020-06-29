@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   overflow-x: auto;
+  overflow: '-moz-hidden-unscrollable',
 }
 body{
   box-sizing: border-box;
@@ -47,6 +48,7 @@ code {
   padding: 0;
   overflow-x: auto;
   min-height: 100vh;
+  
 }
 .flexcol{
 
@@ -58,36 +60,50 @@ code {
 }
 
 .footer{
-  height: 80px;
   background: #263238;
   color: white;
   padding: 0 50px;
+  display: flex;
 }
 footer p {
   font-size: 12px;
   margin-top: 5px;
 }
+.footerlink{
+  margin-top: 1em;
+}
+.footerlink:hover{
+  color: black;
+  cursor: pointer;
+}
+
 .salepercent{
     color: black;
     font-size:  0.8em;
 }
 .saleStyle {
- position: relative;
- margin-bottom: 0;
- margin-left: auto;
- margin-right: auto;
+  height: 24px;
+  display: flex;
 
 }
 .saleperccent{
-
   padding-top:  0.8em;
   display: hidden;
 }
-
-
-
+.salenumber {
+  text-decoration: line-through;
+  width: 50%;
+}
+.salenormal{
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+.salebold{
+  font-weight: bold;
+}
 @media only screen and (max-width: 600px) {
   .partager {
     flex-direction: column;
   }
 }
+

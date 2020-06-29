@@ -6,6 +6,7 @@ import { setCarousel, advanceCarousel, maxCarousel } from "../data/carousel";
 import { getObject } from "../data/object";
 import {currencyFormat} from '../helpers/moneyconvert'
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import {ToastDashMessage} from '../data/snackbar'
 import Skeleton from "@material-ui/lab/Skeleton";
 import {
   Box,
@@ -70,8 +71,9 @@ export default (props) => {
     panel: {
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center",
+      justifyContent: "start",
       alignItems: "center",
+      marginTop: '3em',
     },
     title: {
       textAlign: "center",
@@ -90,11 +92,19 @@ export default (props) => {
       width: '100%',
       marginTop: '3em',
       borderTop: '1px solid grey',
-
-
+    },
+    descriptiontext: {
+      display: 'flex',
+      flexDirection: 'column'
     }
   }));
   const classes = useStyles();
+
+  const BuyOneItem = (payload) =>{
+    dispatch(pushItemToCart(payload))
+    dispatch(ToastDashMessage(`${payload.name} added to the shopping cart`, 'info'))
+
+}
 
   return (
 <>
@@ -172,24 +182,10 @@ export default (props) => {
 
 
         
-          {object.data.printTime ? 
-          <div>
-          <Typography variant="h5">
-            Print-time : {object.data.printTime}
-          </Typography>
-          <Typography variant="h5"> Size: {object.data.size} </Typography>
 
-          </div>
-          :
-          <div className={classes.width}>
-          <Skeleton animation="wave" height={16} width={'100%'} />
-          <Skeleton animation="wave" height={12} width={'100%'} />
-          <Skeleton animation="wave" height={17} width={'100%'} />
-          <Skeleton animation="wave" height={20} width={'100%'} />
-          </div>}
           <Typography gutterBottom variant="h5" color="primary" className={classes.money}>
                 {object ? (
-                  <Button onClick={() => dispatch(pushItemToCart(object.data))}>
+                  <Button onClick={() => BuyOneItem(object.data)}>
                     <AddShoppingCartIcon fontSize={'large'} />
                   </Button>
                 ) : (
@@ -218,10 +214,22 @@ export default (props) => {
                 <Paper className={classes.description}>
                   
                 {object.data.description ? 
-                <Typography variant="h5" align='center' dangerouslySetInnerHTML={{__html: object.data.description}} ></Typography> : 'There is no description at the time, apologies!' }
+                <Typography variant="h5" align='center' className={classes.descriptiontext} dangerouslySetInnerHTML={{__html: object.data.description}} ></Typography> : 'There is no description at the time, apologies!' }
 
                 </Paper>
-          
+                {object.data.size ? 
+          <div>
+
+          <Typography variant="h5"> Size: {object.data.size} </Typography>
+
+          </div>
+          :
+          <div className={classes.width}>
+          <Skeleton animation="wave" height={16} width={'100%'} />
+          <Skeleton animation="wave" height={12} width={'100%'} />
+          <Skeleton animation="wave" height={17} width={'100%'} />
+          <Skeleton animation="wave" height={20} width={'100%'} />
+          </div>}
         </Container>
 
 

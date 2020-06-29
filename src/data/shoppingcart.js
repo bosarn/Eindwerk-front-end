@@ -1,6 +1,8 @@
 /*****************/
 /* INITIAL STATE */
 /*****************/
+
+
 const initialState = [];
 
 /*********/
@@ -22,7 +24,9 @@ export const pushItemToCart = (itemID) => ({
   type: PUSH_ITEM_TO_CART,
   payload: itemID,
 });
-export const removeItemFromCart = (itemID) => ({
+export const removeItemFromCart = (itemID) => (
+  
+  {
   type: REMOVE_ITEM_FROM_CART,
   payload: itemID,
 });
@@ -43,11 +47,11 @@ export const clearShoppingCart = () => ({
 export default (state = initialState, { type, payload, numberload }) => {
   switch (type) {
     case PUSH_ITEM_TO_CART:
-      // if object already in cart do +1
-      // else push object in
+      
       const object = state.find((id) => id.print["@id"] === payload["@id"]);
       if (object) {
         object.quantity += 1;
+        
       } else {
         state.push({ print: payload, quantity: 1 });
       }
@@ -63,8 +67,8 @@ export default (state = initialState, { type, payload, numberload }) => {
       return state;
 
     case SET_OBJECT_QUANTITY:
-      // todo set object + remove all
-
+      
+ 
       if (state.find((id) => id.print["@id"] === payload)) {
         let change = state.find((id) => id.print["@id"] === payload);
         change.quantity = numberload;
@@ -73,7 +77,7 @@ export default (state = initialState, { type, payload, numberload }) => {
       return state;
 
     case CLEAR_SHOPPING_CART:
-      console.log('ttry clear')
+      
       state = []
       return state;
 

@@ -1,11 +1,12 @@
 import React from 'react'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import axios from 'axios';
 import {makeStyles} from "@material-ui/core/styles";
 import {Button, TextField, Typography} from "@material-ui/core"
 import {ToastDashMessage} from '../data/snackbar'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {regexvalidate} from '../helpers/validation'
+import {getObjects} from '../data/postcodes'
 
 export default () => {
 
@@ -63,8 +64,15 @@ export default () => {
 
 const dispatch=useDispatch();
 
-const classes = useStyles();
+const data = useSelector((state) => ({
+  postcodes: state.postcodes,
+  
+}));
 
+
+
+const classes = useStyles();
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [userName, setUserName] = useState("");
@@ -73,11 +81,19 @@ const classes = useStyles();
     const [surname,setSurname] = useState('')
     const [number, setNumber] = useState('')
     const [postcode, setPostcode] = useState('')
+    const [allpostcodes,setAllPostcodes] = useState('')
+
+    useEffect(() => {
+      
+  
+    }, [dispatch]);
 
     const submitHandler = (e) => {
         e.preventDefault();
-        console.log(regexvalidate(userName, 1))
-
+        const index = e.target[7].options.selectedIndex
+        const id = e.target[7][index].attributes[0].value
+        const codeToPost =id.slice(34);
+        
 
         if (regexvalidate(userName, 1) === false) {
           setError('Username is too short or has forbidden characters!')
@@ -104,7 +120,7 @@ const classes = useStyles();
           dispatch(ToastDashMessage('postcode is wrong!', 'warning'))
           return null;
         }
-        registeruser(email, password , userName, address, surname, number,postcode);
+        registeruser(email, password , userName, address, surname, number,codeToPost);
       };
     
 
@@ -134,7 +150,33 @@ const classes = useStyles();
     }
    // seterror , plus dispatch toast errormessage 
 
+const postcodehandler =(e) =>{
 
+  setPostcode(e.target.value)
+  
+  if (e.target.value.length === 4) {
+    axios({
+      method: 'get',
+      url: `https://wdev.be/wdev_arno/eindwerk/api/postcodes?postcode=${e.target.value}`,
+      headers: {'Content-Type' : 'application/json'}, })
+    .then(
+      res => {
+          if( res.data["hydra:member"].length === 0) {
+            dispatch(ToastDashMessage('Nothing found', 'error'))
+          }
+          setAllPostcodes(res.data["hydra:member"])
+    })
+    .catch(
+      reject=> {
+        
+      }
+    )
+  }
+
+
+
+
+}
 
 return (
 <div className={classes.form}>
@@ -201,13 +243,20 @@ return (
             />
               <h2 className={classes.Title}>Postcode</h2>
             <TextField 
-              onChange={(e) => {setPostcode(e.target.value)
-                setError('')}} 
+              onChange={(e) => postcodehandler(e)}
               type="text"
               className={classes.inputField}
               value={postcode}
               color='secondary'
             />
+      {allpostcodes ? <select>
+      {allpostcodes.map( (code,i) => 
+            <option key={i} name={code["@id"]}>{`${code.plaatsnaam} : ${code.gemeente}`}</option>
+ 
+      )}
+      </select>
+    : ''
+    }
             
           <Button 
           className={classes.button}
@@ -220,3 +269,4 @@ return (
       
 )
     }
+

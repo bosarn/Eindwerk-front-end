@@ -47,7 +47,6 @@ const initialState = {
   
       case TOAST_DASH_MESSAGE:
         {
-          console.log('calling from snackbar')
           return {...state,
             dash: {
               message:payload.message,

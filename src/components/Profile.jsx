@@ -1,12 +1,14 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Paper, Typography, TextField, CircularProgress } from "@material-ui/core";
+import { Button, Paper, Typography, TextField, CircularProgress, Box } from "@material-ui/core";
 import Orders from "./Orders";
 import { useDispatch, useSelector } from "react-redux";
 import {getOrders} from '../data/orders'
 import axios from 'axios';
 import { ToastDashMessage } from "../data/snackbar";
+import {regexValidateNumber, regexvalidate} from '../helpers/validation'
+
 
 export default () => {
   const useStyles = makeStyles((theme) => ({
@@ -58,16 +60,23 @@ export default () => {
       color: theme.palette.secondary.detail,
 
     },
+    address: {
+      marginTop: '5px',
+      marginBottom: '10px',
+      color: 'grey',
+      
+    }
   }));
   const data = useSelector((state) => ({
     orders: state.orders,
   }));
 
   const dispatch = useDispatch();
+  useEffect (  () => {
+     dispatch(getOrders());
 
-useEffect(() => {
-    dispatch(getOrders());
-  }, []);
+}, [dispatch]);
+
 
   const classes = useStyles();
 
@@ -80,37 +89,59 @@ useEffect(() => {
   const [verwijder,setVerwijder] = useState(false)
   const [number, setNumber] = useState('')
   const [postcode, setPostcode] = useState('')
+  const [userID, setUserID] = useState('');
 
 //any hook that is set is used, any that is false is left alone
+const checkall = () =>{
+  setUserID(data.orders.data["hydra:member"][0]['@id'])
+  if (name === ""){setName(data.orders.data["hydra:member"][0].name)}
+  if (address === ''){setAddress(data.orders.data["hydra:member"][0].address)}
+  if (surname === ''){setSurname(data.orders.data["hydra:member"][0].surname)}
+  if (number === ''){setNumber(data.orders.data["hydra:member"][0].Streetnumber)}
+  if (postcode === ''){setPostcode(data.orders.data["hydra:member"][0].postcode.postcode)}
+}
 
-const submitHandler = (e) => {
+
+const validateProfiel = () => {
+  
+  if ( regexvalidate(name) && regexvalidate(address) && regexvalidate(surname) &&  regexvalidate(postcode) && regexvalidate(number)) {
+    
+    return true
+  }
+  else {
+    
+    return false
+  }
+}
+
+const submitHandler =  (e) => {
   e.preventDefault();
-   if (name === ""){setName(data.orders.data["hydra:member"][0].name)}
-   if (password === ''){setPassword(data.orders.data["hydra:member"][0].name)}
-   if (address === ''){setAddress(data.orders.data["hydra:member"][0].address)}
-   if (surname === ''){setSurname(data.orders.data["hydra:member"][0].surname)}
-   if (number === ''){setNumber(data.orders.data["hydra:member"][0].number)}
-   if (postcode === ''){setPostcode(data.orders.data["hydra:member"][0].postcode)}
-
-
-    else if (name !== "") {
-
+  if(validateProfiel()) {
     putUser();
   }
-
+  else{
+    dispatch(ToastDashMessage('An inputfield contains forbidden characters', 'warning'))
+  }
 };
+console.log(data)
+
+
 
 const putUser = () => {
   axios({
       method: 'put',
-      url: `https://wdev.be/wdev_arno/eindwerk${data.orders.data["hydra:member"][0]['@id']}`,
+      url: `https://wdev.be/wdev_arno/eindwerk/api/users/${userID.substring( userID.lastIndexOf('/')+1, userID.length )}`,
       headers: { 
           'Content-Type' : 'application/json',
           Authorization:
           `Bearer ${localStorage.getItem('token')}`},
       data: {
             name: name,
-            
+            isDeleted : verwijder,
+            address: address,
+            surname: surname,
+            Streetnumber: parseInt(number),
+            //postcode: postcode
       }
     })
     .then(
@@ -125,19 +156,19 @@ const putUser = () => {
     })
     .catch(
       reject => {
-        dispatch(ToastDashMessage('Something went wrong, Are you logged in or a Hackerman?', 'error'))
+        dispatch(ToastDashMessage('Something went wrong, Are you logged in ?', 'error'))
       }
     )
 }
 
-// email password name surname street number  postcode 
   return (
     <>
+    
       <Paper className={classes.form}>
         <h1 className={classes.Title}> Change user details </h1>
         
         {data.orders.data["hydra:member"] ? (
-          <form className={classes.formmakeup} onSubmit={submitHandler}>
+          <form className={classes.formmakeup} onSubmit={submitHandler} onClick={()=>checkall()}>
 
             <h2 className={classes.Title}>Mail address</h2>
 
@@ -174,7 +205,7 @@ const putUser = () => {
             />
             <h2 className={classes.Title}>Street</h2>
             <TextField 
-              onChange={(e) => {setAddress(e.target.value)}} 
+              onChange={(e) => {setAddress(e.target.value) }} 
               type="text"
               className={classes.inputField}
               placeholder={data.orders.data["hydra:member"][0].address}
@@ -187,6 +218,7 @@ const putUser = () => {
               type="text"
               className={classes.inputField}
               value={number}
+              placeholder={data.orders.data["hydra:member"][0].Streetnumber}
               color='secondary'
             />
               <h2 className={classes.Title}>Postcode</h2>
@@ -195,9 +227,14 @@ const putUser = () => {
               type="text"
               className={classes.inputField}
               value={postcode}
+              placeholder={data.orders.data["hydra:member"][0].postcode.postcode}
               color='secondary'
             />
-
+          <div className={classes.address}>
+            <Typography align='center'> {data.orders.data["hydra:member"][0].postcode.plaatsnaam}</Typography>
+            <Typography align='center'> {data.orders.data["hydra:member"][0].postcode.gemeente}</Typography>
+            <Typography align='center'> {data.orders.data["hydra:member"][0].postcode.provincie}</Typography>
+            </div>
             <div className={classes.inputField}>
               {" "}
               <Button className={classes.button} type="submit" >
@@ -216,9 +253,9 @@ const putUser = () => {
         />
         )}
 
-      </Paper>
+      </Paper> 
       {data.orders.data["hydra:member"] ? 
-      <Orders data={data.orders.data["hydra:member"][0].orders}/> :' '}
+      <Orders data={data.orders.data["hydra:member"][0]}/> :' '}
     </>
   );
 };

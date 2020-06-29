@@ -40,7 +40,7 @@ export default (data) => {
       {data ? (
         <Paper className={classes.Order}>
           <ul>
-            {data.data.map((orders, i) => (
+            {data.data.orders.map((orders, i) => (
               <li key={i}>
                 <ExpansionPanel className={classes.panel}>
                   <ExpansionPanelSummary
@@ -69,14 +69,14 @@ export default (data) => {
                         <Typography variant="body1" align="center">
                           {" "}
                           <strong>Shipping to : </strong>
-                          {orders.shippingAdress}{" "}
+                          {orders.shippingAdress ? orders.shippingAdress : `${data.data.address}  ${data.data.Streetnumber}  ${data.data.postcode}`  }{" "}
                         </Typography>
                       </li>
 
                       <li>
                         <Typography variant="body1" align="center">
                           {" "}
-                          <strong>Order made :</strong> {orders.date.slice(20)}
+                          <strong>Order made :</strong> {orders.date}
                         </Typography>
                       </li>
                     </ul>

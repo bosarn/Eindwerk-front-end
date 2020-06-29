@@ -4,10 +4,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import {  
   Paper, 
   Typography,
+  ExpansionPanelDetails,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  Button
  } 
   from '@material-ui/core';
   import {getCategories} from '../data/categories'
-
+  import {toggleFilter} from '../data/filter'
 
 export default () => {
 
@@ -19,7 +23,6 @@ useEffect(() => {
 
 }, []);
 
-
     const useStyles = makeStyles( theme =>({
         root: {
         marginTop: '50px',
@@ -28,20 +31,33 @@ useEffect(() => {
         },
         image: {
           height: '100px',
-          borderRadius: '100px',
+          width: '100px',
+          border: `1px solid ${theme.palette.secondary.detail}`
         },
-        categoryPanel: {
-          display: 'flex',
-          paddingBottom: '130px',
 
-        },
         description: {
           display: 'flex',
-          flexDirection: 'column',
-          marginLeft: '2em'
+          marginLeft: '15%',
+          '& p':{
+              marginLeft: '5%'
+          }
         },
         center: {
           marginLeft: '15%',
+
+        },
+        button:{
+          color: theme.palette.secondary.main,
+          background: theme.palette.secondary.detail
+        },
+        Title: {
+          marginLeft: '30%'
+        },
+        header: {
+          background: theme.palette.secondary.detail,
+          color: 'white',
+          paddingTop: '10px',
+          paddingBottom: '10px'
         }
 
       }));
@@ -54,24 +70,50 @@ useEffect(() => {
     
      const  {data} = stateData.categories
 
+
+
+const searchbyCategory = (categoryName) => {
+  const element = document.querySelector('#ObjectGrid');
+  dispatch(toggleFilter(categoryName));
+
+  if(navigator.userAgent.slice(0,7) !== 'Mozilla') {
+    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+  }
+  else{
+    element.scrollIntoView({block: 'nearest', inline: 'start' })
+  }
+
+
+
+}
+
     return (
 
 
 
 
 <Paper className={classes.root}>
+  <Typography variant='h4' align='center' className={classes.header}> Check out each category </Typography>
+ {data['hydra:member'] ? data['hydra:member'].map( category =>
 
-      {data['hydra:member'] ? data['hydra:member'].map( category =>
-
-<Paper className={classes.categoryPanel}>
-<div className={classes.center}>
+<ExpansionPanel className={classes.categoryPanel}>
+  
+<ExpansionPanelSummary className={classes.center}>
   <img src={`https://wdev.be/wdev_arno/eindwerk/system/public${category.image}`} alt='CategoryNames' className={classes.image}></img>
+  <Typography variant='h5' className={classes.Title}> {category.name} </Typography>
+
+  </ExpansionPanelSummary>
+
+  <ExpansionPanelDetails>
   <div className={classes.description}>
-  <Typography variant='h5'> {category.name} </Typography>
-  <Typography variant='body2'>{category.description}</Typography>
-  </div>
-  </div>
-</Paper>
+
+
+<Button className={classes.button} onClick={()=>searchbyCategory(category.name)}>Search by category!</Button>
+<Typography variant='body2' className={classes.descriptiontext}>{category.description}</Typography>
+</div>
+    </ExpansionPanelDetails>
+
+</ExpansionPanel>
 
       )
       : ''}
@@ -83,3 +125,4 @@ useEffect(() => {
 
     )
 }
+

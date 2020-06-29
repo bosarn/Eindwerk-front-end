@@ -10,10 +10,14 @@ const opentab = () =>{
 
     return (
         <footer className='footer'>        
-        <p>Copyright en al...</p>
-        <p>Contacteer ons op onze barbecue</p>
+<ul>        
+    <li>3D-Print-Domain </li>
+        <li>ValseStraat 32 </li>
+        <li>3DprintAdmin</li>
+        <li>0434343421</li>
+        <li>3Dprintdomaininfo@gmail.com</li></ul>
 
-        <div onClick={opentab}> Github</div>
+        <div className='footerlink' onClick={opentab}> Github</div>
         </footer>
 
     )

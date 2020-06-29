@@ -23,7 +23,7 @@ import Snackbar from './Snackbar';
 import {ToastDashMessage} from '../data/snackbar'
 import { ThemeProvider, useTheme, makeStyles } from '@material-ui/core/styles';
 import { shadows } from '@material-ui/system';
-
+import {regexValidateNumber, regexvalidate} from '../helpers/validation'
 
 
 export default () => {
@@ -127,6 +127,7 @@ export default () => {
 
     },
     Pages: {
+      
       display: "flex",
       flexDirection: "column",
       width: "100%",
@@ -141,11 +142,15 @@ export default () => {
       marginTop: "2em",
     },
     chips: {
+
+      
       display: 'flex',
       justifyContent: 'center',
       flexDirection: 'row',
+      flexWrap: 'wrap',
       '& li' : {
-          marginLeft: '10px'
+         marginLeft: '1px',
+         marginTop: '4px',
       },
     },
 
@@ -199,17 +204,22 @@ export default () => {
 
   const submitHandler = (e) => {
     e.preventDefault()
-    dispatch(getObjects(textFieldValue))
+    if (regexvalidate(textFieldValue)){
+      dispatch(getObjects(textFieldValue))
+    }
+    else {
+      dispatch(ToastDashMessage('Please input a valid searchstring', 'error'))
+    }
 
   }
   const handleDelete = (filter) => {
-
     dispatch(toggleFilter(filter))
   };
-
-  const handleClickChip = () => {
-    console.info('You clicked the Chip.');
-  };
+  const BuyOneItem = (payload) =>{
+        dispatch(pushItemToCart(payload))
+        dispatch(ToastDashMessage('added to shopping cart', 'info'))
+    
+}
 
   return (
 <>
@@ -231,14 +241,13 @@ export default () => {
           />
         )}
 
-        <ul className={classes.chips}>
+        <ul className={classes.chips} id='ObjectGrid'>
     {filterArray.map((filter,i) => 
     <li key={i}>
     <Chip
       label={filter}
       className={classes.chip}
       clickable={true}
-      onClick={handleClickChip}
       onDelete={()=>handleDelete(filter)}
       color='secondary'
     />
@@ -251,6 +260,7 @@ export default () => {
           justify="center"
           alignItems="center"
           className={classes.container}
+          
         >
           {(loading ? Array.from(new Array(20)) : ObjectsPaged).map(
             (object, i) => (
@@ -268,7 +278,7 @@ export default () => {
                     )}
                     </div>
                     {object ? (
-                      <Button className={classes.shoppingcart} onClick={() => dispatch(pushItemToCart(object))}>
+                      <Button className={classes.shoppingcart} onClick={() => BuyOneItem(object)}>
                         <AddShoppingCartIcon />
                       </Button>
                     ) : (
